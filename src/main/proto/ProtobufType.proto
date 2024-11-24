@@ -1,0 +1,37 @@
+// Copyright 2024, Raccoons. Developing simple way to change.
+//
+// @license MIT
+
+syntax = "proto3";
+
+package raccoons.protoc.plugin;
+
+option java_package = "co.raccoons.protoc.plugin";
+option java_outer_classname = "ProtobufTypeProto";
+option java_multiple_files = true;
+
+import "google/protobuf/descriptor.proto";
+
+// Describes a Protobuf type wrapper.
+message ProtobufType {
+  // A fully-qualified name of the Protobuf type.
+  string name = 1;
+  // A java file name, relative to the output directory.
+  string java_file_name = 2;
+
+  // Describes this Protobuf type.
+  oneof descriptor {
+    google.protobuf.DescriptorProto message_type = 10;
+    google.protobuf.EnumDescriptorProto enum_type = 12;
+    google.protobuf.ServiceDescriptorProto service = 13;
+  };
+}
+
+message ProtobufTypeSet {
+  // A message types storage.
+  repeated ProtobufType message_type = 1;
+  // A enum types storage.
+  repeated ProtobufType enum_type = 2;
+  // A services storage.
+  repeated ProtobufType service = 3;
+}

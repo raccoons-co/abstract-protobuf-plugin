@@ -2,9 +2,10 @@ GENERATED_OUT_DIR = ./generated
 
 .PHONY: proto
 proto: clean $(GENERATED_OUT_DIR)
-proto: PROTO_PATH = ./src/main/proto
+proto: PROTO_PATH = ./src/test/proto
 proto:
 	protoc \
+		--java_out=$(GENERATED_OUT_DIR) \
 		--plugin=protoc-gen-example=./plugin.sh \
 		--example_out=$(GENERATED_OUT_DIR) \
 		--proto_path=$(PROTO_PATH) \

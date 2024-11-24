@@ -5,6 +5,6 @@
  */
 
 @CheckReturnValue
-package co.raccoons.protoc;
+package co.raccoons.protoc.plugin;
 
 import com.google.errorprone.annotations.CheckReturnValue;
