@@ -25,10 +25,11 @@ public final class Plugin {
             @Override
             public CodeGeneratorResponse response() {
                 var request = request();
-                var generator = new ExtraMessageInterface();
-                var files = generator.process(request);
+                var files1 = new ExtraMessageInterface().process(request);
+//                var files2 = new ExtraMessageOrBuilderInterfaces().process(request);
                 return CodeGeneratorResponse.newBuilder()
-                        .addAllFile(files)
+                        .addAllFile(files1)
+//                        .addAllFile(files2)
                         .build();
             }
         }.integrate();
