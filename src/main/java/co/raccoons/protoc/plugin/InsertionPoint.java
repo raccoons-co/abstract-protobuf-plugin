@@ -26,28 +26,50 @@ public enum InsertionPoint {
      */
     builder_implements,
 
-    /**
-     * Extra MessageOrBuilder Interfaces.
-     */
-    interface_extends,
-
     class_scope,
 
     builder_scope,
 
     enum_scope,
 
+    /**
+     * Extra MessageOrBuilder Interfaces.
+     */
+    interface_extends {
+        @Override
+        protected String relativeFileName(ProtobufType type) {
+            return type.getJavaFileName().getBuilderName();
+        }
+    },
+
+
     outer_class_scope {
         @Override
-        public String forType(ProtobufType type) {
+        protected String relativeFileName(ProtobufType type) {
+            return type.getJavaFileName().getOuterClassName();
+        }
+
+        @Override
+        protected String forType(ProtobufType type) {
             return name();
         }
     };
 
+    public ProtocExtra newProtocExtra(ProtobufType type) {
+        return ProtocExtra.newBuilder()
+                .setFileName(relativeFileName(type))
+                .setInsertionPoint(forType(type))
+                .build();
+    }
+
     /**
      * Returns insertion point string representation for the given type name.
      */
-    public String forType(ProtobufType type) {
+    protected String forType(ProtobufType type) {
         return format("%s:%s", name(), type.getName());
+    }
+
+    protected String relativeFileName(ProtobufType type) {
+        return type.getJavaFileName().getName();
     }
 }

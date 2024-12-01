@@ -17,10 +17,10 @@ public class ExtraMessageOrBuilderInterfaces extends AbstractCodeGenerator {
 
     @Override
     protected File generateProtocExtra(ProtobufType type) {
-        var insertionPoint = InsertionPoint.interface_extends.forType(type);
+        var extra = InsertionPoint.interface_extends.newProtocExtra(type);
         return File.newBuilder()
-                .setName(type.getJavaFileName())
-                .setInsertionPoint(insertionPoint)
+                .setName(extra.getFileName())
+                .setInsertionPoint(extra.getInsertionPoint())
                 .setContent("co.raccoons.event.Observable,")
                 .build();
     }

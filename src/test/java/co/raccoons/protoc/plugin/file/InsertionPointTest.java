@@ -19,7 +19,8 @@ class InsertionPointTest {
     @DisplayName("has correct format")
     void hasCorrectFormat(String expected, InsertionPoint insertionPoint) {
         var type = protobufType();
-        assertEquals(expected, insertionPoint.forType(type));
+        var extra = insertionPoint.newProtocExtra(type);
+        assertEquals(expected, extra.getInsertionPoint());
     }
 
     private ProtobufType protobufType() {

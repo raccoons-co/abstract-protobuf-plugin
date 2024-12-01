@@ -26,10 +26,10 @@ public final class Plugin {
             public CodeGeneratorResponse response() {
                 var request = request();
                 var files1 = new ExtraMessageInterface().process(request);
-//                var files2 = new ExtraMessageOrBuilderInterfaces().process(request);
+                var files2 = new ExtraMessageOrBuilderInterfaces().process(request);
                 return CodeGeneratorResponse.newBuilder()
                         .addAllFile(files1)
-//                        .addAllFile(files2)
+                        .addAllFile(files2)
                         .build();
             }
         }.integrate();

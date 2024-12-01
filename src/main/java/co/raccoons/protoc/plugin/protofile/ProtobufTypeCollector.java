@@ -1,109 +1,83 @@
 package co.raccoons.protoc.plugin.protofile;
 
 import co.raccoons.protoc.plugin.ProtobufType;
-import com.google.common.collect.ImmutableSet;
+import co.raccoons.protoc.plugin.ProtobufTypeFileName;
+import co.raccoons.protoc.plugin.ProtobufTypeSet;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import static java.lang.String.format;
+import static com.google.common.base.Preconditions.checkNotNull;
 
+public abstract class ProtobufTypeCollector {
 
-public final class ProtobufTypeCollector implements ProtoFileVisitor {
+    private final FileDescriptor protoFile;
+    private final ProtobufTypeSet.Builder builder;
 
-    private final Set<ProtobufType> messageTypes = new HashSet<>();
-    private final Set<ProtobufType> enumTypes = new HashSet<>();
-    private final Set<ProtobufType> services = new HashSet<>();
+    protected ProtobufTypeCollector(FileDescriptor protoFile,
+                                    ProtobufTypeSet.Builder builder) {
+        this.protoFile = checkNotNull(protoFile);
+        this.builder = checkNotNull(builder);
+    }
 
-    @Override
-    public void visit(JavaMultipleFile visitor, FileDescriptor protoFile) {
+    public final void collect() {
+        checkNotNull(protoFile);
         walkTopLevelServices(protoFile.getServices());
         walkTopLevelEnumTypes(protoFile.getEnumTypes());
         walkTopLevelMessageTypes(protoFile.getMessageTypes());
     }
 
-    @Override
-    public void visit(JavaSingleFile visitor, FileDescriptor protoFile) {
-        var javaFileName = javaFileName(protoFile);
-        walkTopLevelServices(protoFile.getServices(), javaFileName);
-        walkTopLevelEnumTypes(protoFile.getEnumTypes(), javaFileName);
-        walkTopLevelMessageTypes(protoFile.getMessageTypes(), javaFileName);
-    }
+    protected abstract ProtobufTypeFileName fileNameFor(ServiceDescriptor service);
 
-    public ImmutableSet<ProtobufType> messageTypes() {
-        return ImmutableSet.copyOf(messageTypes);
-    }
+    protected abstract ProtobufTypeFileName fileNameFor(EnumDescriptor enumType);
 
-    public ImmutableSet<ProtobufType> enumTypes() {
-        return ImmutableSet.copyOf(enumTypes);
-    }
-
-    public ImmutableSet<ProtobufType> services() {
-        return ImmutableSet.copyOf(services);
-    }
+    protected abstract ProtobufTypeFileName fileNameFor(Descriptor messageType);
 
     private void walkTopLevelServices(List<ServiceDescriptor> serviceList) {
         for (var service : serviceList) {
-            addNewService(service, javaFileName(service));
-        }
-    }
-
-    private void walkTopLevelServices(List<ServiceDescriptor> serviceList, String javaFileName) {
-        for (var service : serviceList) {
-            addNewService(service, javaFileName);
+            addNewService(service, fileNameFor(service));
         }
     }
 
     private void walkTopLevelEnumTypes(List<EnumDescriptor> enumTypeList) {
         for (var enumType : enumTypeList) {
-            addNewEnumType(enumType, javaFileName(enumType));
-        }
-    }
-
-    private void walkTopLevelEnumTypes(List<EnumDescriptor> enumTypeList, String javaFileName) {
-        for (var enumType : enumTypeList) {
-            addNewEnumType(enumType, javaFileName);
+            addNewEnumType(enumType, fileNameFor(enumType));
         }
     }
 
     private void walkTopLevelMessageTypes(List<Descriptor> messageTypeList) {
         for (var messageType : messageTypeList) {
-            flatten(messageType, javaFileName(messageType));
+            flatten(messageType, fileNameFor(messageType));
         }
     }
 
-    private void walkTopLevelMessageTypes(List<Descriptor> messageTypeList, String javaFileName) {
-        for (var messageType : messageTypeList) {
-            flatten(messageType, javaFileName);
-        }
-    }
-
-    private void flatten(Descriptor messageType, String javaFileName) {
+    private void flatten(Descriptor messageType,
+                         ProtobufTypeFileName javaFileName) {
         addNewMessageType(messageType, javaFileName);
         walkInnerEnumTypes(messageType.getEnumTypes(), javaFileName);
         walkNestedTypes(messageType.getNestedTypes(), javaFileName);
     }
 
-    private void walkNestedTypes(List<Descriptor> messageTypeList, String javaFileName) {
+    private void walkNestedTypes(List<Descriptor> messageTypeList,
+                                 ProtobufTypeFileName javaFileName) {
         for (var messageType : messageTypeList) {
             flatten(messageType, javaFileName);
         }
     }
 
-    private void walkInnerEnumTypes(List<EnumDescriptor> enumTypeList, String javaFileName) {
+    private void walkInnerEnumTypes(List<EnumDescriptor> enumTypeList,
+                                    ProtobufTypeFileName javaFileName) {
         for (var enumType : enumTypeList) {
             addNewEnumType(enumType, javaFileName);
         }
     }
 
-    private void addNewService(ServiceDescriptor service, String javaFileName) {
-        services.add(
+    private void addNewService(ServiceDescriptor service,
+                               ProtobufTypeFileName javaFileName) {
+        builder.addService(
                 ProtobufType.newBuilder()
                         .setName(service.getFullName())
                         .setJavaFileName(javaFileName)
@@ -112,8 +86,9 @@ public final class ProtobufTypeCollector implements ProtoFileVisitor {
         );
     }
 
-    private void addNewEnumType(EnumDescriptor enumType, String javaFileName) {
-        enumTypes.add(
+    private void addNewEnumType(EnumDescriptor enumType,
+                                ProtobufTypeFileName javaFileName) {
+        builder.addEnumType(
                 ProtobufType.newBuilder()
                         .setName(enumType.getFullName())
                         .setJavaFileName(javaFileName)
@@ -122,34 +97,14 @@ public final class ProtobufTypeCollector implements ProtoFileVisitor {
         );
     }
 
-    private void addNewMessageType(Descriptor messageType, String javaFileName) {
-        messageTypes.add(
+    private void addNewMessageType(Descriptor messageType,
+                                   ProtobufTypeFileName javaFileName) {
+        builder.addMessageType(
                 ProtobufType.newBuilder()
                         .setName(messageType.getFullName())
                         .setJavaFileName(javaFileName)
                         .setMessageType(messageType.toProto())
                         .build()
         );
-    }
-
-    private String javaFileName(FileDescriptor descriptor) {
-        var javaPackage = packageName(descriptor);
-        var javaSimpleName = descriptor.getOptions().getJavaOuterClassname();
-        return relativeFileName(javaPackage, javaSimpleName);
-    }
-
-    private String javaFileName(GenericDescriptor descriptor) {
-        var javaPackage = packageName(descriptor.getFile());
-        var javaSimpleName = descriptor.getName();
-        return relativeFileName(javaPackage, javaSimpleName);
-    }
-
-    private String packageName(FileDescriptor descriptor){
-        return descriptor.getOptions().getJavaPackage();
-    }
-
-    private String relativeFileName(String packageName, String javaSimpleName) {
-        var javaDirectory = packageName.replaceAll("\\.", "/");
-        return format("%s/%s.java", javaDirectory, javaSimpleName);
     }
 }

@@ -4,10 +4,9 @@
  * @license MIT
  */
 
-package co.raccoons.protoc.plugin;
+package co.raccoons.protoc.plugin.protofile;
 
-import co.raccoons.protoc.plugin.protofile.JavaOptionPreset;
-import co.raccoons.protoc.plugin.protofile.ProtobufTypeCollector;
+import co.raccoons.protoc.plugin.ProtobufTypeSet;
 import com.google.common.collect.ImmutableMap;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -18,37 +17,35 @@ import com.google.protobuf.ProtocolStringList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 @Immutable
 public final class ProtobufFileSet {
 
     private final ImmutableMap<String, FileDescriptor> files;
-    @SuppressWarnings("Immutable")
-    private final ProtobufTypeCollector collector = new ProtobufTypeCollector();
 
     private ProtobufFileSet(ImmutableMap<String, FileDescriptor> files) {
-        this.files = files;
+        this.files = checkNotNull(files);
     }
 
     public static ProtobufFileSet of(Iterable<FileDescriptorProto> protos) {
-        var files = walk(protos);
+        checkNotNull(protos);
+        var files = files(protos);
         return new ProtobufFileSet(files);
     }
 
     public ProtobufTypeSet newProtobufTypeSet(ProtocolStringList fileToGenerateList) {
+        var builder = ProtobufTypeSet.newBuilder();
         for (var fileName : fileToGenerateList) {
             var protoFile = files.get(fileName);
-            JavaOptionPreset.of(protoFile)
-                    .multipleFilesOrSingle()
-                    .accept(collector, protoFile);
+            JavaMultipleFilesOrSingle.of(protoFile)
+                    .newProtobufTypeCollector(builder)
+                    .collect();
         }
-        return ProtobufTypeSet.newBuilder()
-                .addAllService(collector.services())
-                .addAllEnumType(collector.enumTypes())
-                .addAllMessageType(collector.messageTypes())
-                .build();
+        return builder.build();
     }
 
-    private static ImmutableMap<String, FileDescriptor> walk(Iterable<FileDescriptorProto> protos) {
+    private static ImmutableMap<String, FileDescriptor> files(Iterable<FileDescriptorProto> protos) {
         Map<String, FileDescriptor> files = new HashMap<>();
         for (var fileDescriptorProto : protos) {
             var dependencies =
@@ -65,5 +62,26 @@ public final class ProtobufFileSet {
             }
         }
         return ImmutableMap.copyOf(files);
+    }
+
+    @Immutable
+    private static final class JavaMultipleFilesOrSingle {
+
+        private final FileDescriptor protoFile;
+
+        public JavaMultipleFilesOrSingle(FileDescriptor protoFile) {
+            this.protoFile = checkNotNull(protoFile);
+        }
+
+        public static JavaMultipleFilesOrSingle of(FileDescriptor protoFile) {
+            checkNotNull(protoFile);
+            return new JavaMultipleFilesOrSingle(protoFile);
+        }
+
+        public ProtobufTypeCollector newProtobufTypeCollector(ProtobufTypeSet.Builder builder) {
+            return protoFile.getOptions().getJavaMultipleFiles()
+                    ? new JavaMultipleFile(protoFile, builder)
+                    : new JavaSingleFile(protoFile, builder);
+        }
     }
 }

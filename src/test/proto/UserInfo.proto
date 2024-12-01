@@ -6,7 +6,7 @@ option java_package = "co.raccoons.example";
 option java_outer_classname = "UserInfoProto";
 option java_multiple_files = true;
 
-import "Nothing.proto";
+import "nothing.proto";
 
 message UserInfo {
 
