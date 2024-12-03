@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-package co.raccoons.protoc.plugin.protofile;
+package co.raccoons.protoc.plugin.protos;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
@@ -12,6 +12,11 @@ import com.google.protobuf.Descriptors.GenericDescriptor;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
+/**
+ * A relative java file name of the given protocol message type.
+ *
+ * @param <T> the protocol message type
+ */
 final class JavaFileName<T extends GenericDescriptor> {
 
     private static final String CLASS_PATTERN = "%s/%s.java";
@@ -24,28 +29,35 @@ final class JavaFileName<T extends GenericDescriptor> {
         this.descriptor = checkNotNull(descriptor);
     }
 
+    /**
+     * Returns new instance of {@code JavaFileName} ot the given protocol
+     * message type.
+     */
     public static <T extends GenericDescriptor> JavaFileName<T> of(T descriptor) {
         return new JavaFileName<T>(descriptor);
     }
 
+    /**
+     * Obtains relative java file name for message type class.
+     */
     public String forClass() {
         return format(CLASS_PATTERN, directory(), simpleName());
     }
 
+    /**
+     * Obtains relative java file name for message or builder type class.
+     */
     public String forBuilder() {
         return format(BUILDER_PATTERN, directory(), simpleName());
     }
 
+    /**
+     * Obtains relative java file name for type outer class.
+     */
     public String forOuterClass() {
-        if (hasJavaOuterClassname()) {
-            return format(CLASS_PATTERN, directory(), outerClassName());
-        } else {
-            return format(EMPTY_OUTER_CLASS_PATTERN, directory(), simpleName());
-        }
-    }
-
-    private boolean hasJavaOuterClassname() {
-        return descriptor.getFile().getOptions().hasJavaOuterClassname();
+        return hasJavaOuterClassname()
+                ? format(CLASS_PATTERN, directory(), outerClassName())
+                : format(EMPTY_OUTER_CLASS_PATTERN, directory(), simpleName());
     }
 
     private String directory() {
@@ -53,10 +65,6 @@ final class JavaFileName<T extends GenericDescriptor> {
                 .getOptions()
                 .getJavaPackage()
                 .replaceAll("\\.", "/");
-    }
-
-    private String outerClassName() {
-        return descriptor.getFile().getOptions().getJavaOuterClassname();
     }
 
     private String simpleName() {
@@ -68,5 +76,13 @@ final class JavaFileName<T extends GenericDescriptor> {
 
     private String capitalize(String str) {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
+    private boolean hasJavaOuterClassname() {
+        return descriptor.getFile().getOptions().hasJavaOuterClassname();
+    }
+
+    private String outerClassName() {
+        return descriptor.getFile().getOptions().getJavaOuterClassname();
     }
 }

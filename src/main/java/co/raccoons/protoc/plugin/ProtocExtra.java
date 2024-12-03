@@ -14,7 +14,7 @@ import static java.lang.String.format;
  * @see <a href="https://protobuf.dev/reference/java/java-generated/#plugins">
  * Plugin Insertion Points</a>
  */
-public enum InsertionPoint {
+public enum ProtocExtra {
 
     /**
      * Extra Message Interfaces.
@@ -50,22 +50,22 @@ public enum InsertionPoint {
         }
 
         @Override
-        protected String forType(ProtobufType type) {
-            return name();
+        protected String identifier(ProtobufType type) {
+            return format("%s", name());
         }
     };
 
-    public ProtocExtra newProtocExtra(ProtobufType type) {
-        return ProtocExtra.newBuilder()
+    public InsertionPoint newInsertionPoint(ProtobufType type) {
+        return InsertionPoint.newBuilder()
                 .setFileName(relativeFileName(type))
-                .setInsertionPoint(forType(type))
+                .setIdentifier(identifier(type))
                 .build();
     }
 
     /**
-     * Returns insertion point string representation for the given type name.
+     * Returns insertion point identifier for the given type name.
      */
-    protected String forType(ProtobufType type) {
+    protected String identifier(ProtobufType type) {
         return format("%s:%s", name(), type.getName());
     }
 

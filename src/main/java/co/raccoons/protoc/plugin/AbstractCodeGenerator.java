@@ -6,7 +6,7 @@
 
 package co.raccoons.protoc.plugin;
 
-import co.raccoons.protoc.plugin.protofile.ProtobufFileSet;
+import co.raccoons.protoc.plugin.protos.ProtobufFileSet;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
@@ -38,16 +38,19 @@ public abstract class AbstractCodeGenerator {
      */
     public final Collection<File> process(CodeGeneratorRequest request) {
         checkNotNull(request);
-        var extendableTypes = types(request);
-        var protoTypes = typeScope().limit(extendableTypes);
-        return extensions(protoTypes);
+        var protobufTypes = types(request);
+        var extendableTypes = typeScope().limit(protobufTypes);
+        return extensions(extendableTypes);
     }
 
     /**
-     * Generates Protobuf extra artifact represented by
-     * {@code CodeGeneratorResponse.File} that adds code to the insertion points.
+     * Generates Protobuf compiler extra artifact that extends the output
+     * produced by another code generator.
+     *
+     * @param type the Protobuf type that will be extended
+     * @return new generated file
      */
-    protected abstract File generateProtocExtra(ProtobufType type);
+    protected abstract File generate(ProtobufType type);
 
     /**
      * Defines the scope of Protobuf types that are processed by the code
@@ -68,7 +71,7 @@ public abstract class AbstractCodeGenerator {
     private Collection<File> extensions(Collection<ProtobufType> extendableTypes) {
         return extendableTypes
                 .stream()
-                .map(this::generateProtocExtra)
+                .map(this::generate)
                 .collect(Collectors.toList());
     }
 

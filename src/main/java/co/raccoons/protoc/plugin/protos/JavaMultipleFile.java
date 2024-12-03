@@ -4,39 +4,44 @@
  * @license MIT
  */
 
-package co.raccoons.protoc.plugin.protofile;
+package co.raccoons.protoc.plugin.protos;
 
-import co.raccoons.protoc.plugin.ProtobufTypeFileName;
+import co.raccoons.protoc.plugin.ProtobufType.FileName;
 import co.raccoons.protoc.plugin.ProtobufTypeSet;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 
+/**
+ * Protobuf type collector that generates into multiple Java files.
+ *
+ * @see <a href="https://protobuf.dev/reference/java/java-generated/">
+ * option java_multiple_files = true;</a>
+ */
 public final class JavaMultipleFile extends ProtobufTypeCollector {
 
-    public JavaMultipleFile(FileDescriptor protoFile,
-                            ProtobufTypeSet.Builder builder) {
+    public JavaMultipleFile(FileDescriptor protoFile, ProtobufTypeSet.Builder builder) {
         super(protoFile, builder);
     }
 
     @Override
-    protected ProtobufTypeFileName fileNameFor(ServiceDescriptor service) {
-        return ProtobufTypeFileName.newBuilder()
+    protected FileName fileNameFor(ServiceDescriptor service) {
+        return FileName.newBuilder()
                 .setName(JavaFileName.of(service).forClass())
                 .build();
     }
 
     @Override
-    protected ProtobufTypeFileName fileNameFor(EnumDescriptor enumType) {
-        return ProtobufTypeFileName.newBuilder()
+    protected FileName fileNameFor(EnumDescriptor enumType) {
+        return FileName.newBuilder()
                 .setName(JavaFileName.of(enumType).forClass())
                 .build();
     }
 
     @Override
-    protected ProtobufTypeFileName fileNameFor(Descriptor messageType) {
-        return ProtobufTypeFileName.newBuilder()
+    protected FileName fileNameFor(Descriptor messageType) {
+        return FileName.newBuilder()
                 .setName(JavaFileName.of(messageType).forClass())
                 .setBuilderName(JavaFileName.of(messageType).forBuilder())
                 .setOuterClassName(JavaFileName.of(messageType).forOuterClass())

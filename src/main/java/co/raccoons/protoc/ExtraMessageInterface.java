@@ -7,8 +7,8 @@
 package co.raccoons.protoc;
 
 import co.raccoons.protoc.plugin.AbstractCodeGenerator;
-import co.raccoons.protoc.plugin.InsertionPoint;
 import co.raccoons.protoc.plugin.ProtobufType;
+import co.raccoons.protoc.plugin.ProtocExtra;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
@@ -16,11 +16,12 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 public class ExtraMessageInterface extends AbstractCodeGenerator {
 
     @Override
-    protected File generateProtocExtra(ProtobufType type) {
-        var extra = InsertionPoint.message_implements.newProtocExtra(type);
+    protected File generate(ProtobufType type) {
+        var insertionPoint = ProtocExtra.message_implements.newInsertionPoint(type);
+
         return File.newBuilder()
-                .setName(extra.getFileName())
-                .setInsertionPoint(extra.getInsertionPoint())
+                .setName(insertionPoint.getFileName())
+                .setInsertionPoint(insertionPoint.getIdentifier())
                 .setContent("co.raccoons.event.Observable,")
                 .build();
     }

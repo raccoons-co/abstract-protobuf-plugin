@@ -1,7 +1,7 @@
-package co.raccoons.protoc.plugin.protofile;
+package co.raccoons.protoc.plugin.protos;
 
 import co.raccoons.protoc.plugin.ProtobufType;
-import co.raccoons.protoc.plugin.ProtobufTypeFileName;
+import co.raccoons.protoc.plugin.ProtobufType.FileName;
 import co.raccoons.protoc.plugin.ProtobufTypeSet;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
@@ -15,12 +15,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public abstract class ProtobufTypeCollector {
 
     private final FileDescriptor protoFile;
-    private final ProtobufTypeSet.Builder builder;
+    private final ProtobufTypeSet.Builder typeSetBuilder;
 
     protected ProtobufTypeCollector(FileDescriptor protoFile,
-                                    ProtobufTypeSet.Builder builder) {
+                                    ProtobufTypeSet.Builder typeSetBuilder) {
         this.protoFile = checkNotNull(protoFile);
-        this.builder = checkNotNull(builder);
+        this.typeSetBuilder = checkNotNull(typeSetBuilder);
     }
 
     public final void collect() {
@@ -30,11 +30,11 @@ public abstract class ProtobufTypeCollector {
         walkTopLevelMessageTypes(protoFile.getMessageTypes());
     }
 
-    protected abstract ProtobufTypeFileName fileNameFor(ServiceDescriptor service);
+    protected abstract FileName fileNameFor(ServiceDescriptor service);
 
-    protected abstract ProtobufTypeFileName fileNameFor(EnumDescriptor enumType);
+    protected abstract FileName fileNameFor(EnumDescriptor enumType);
 
-    protected abstract ProtobufTypeFileName fileNameFor(Descriptor messageType);
+    protected abstract FileName fileNameFor(Descriptor messageType);
 
     private void walkTopLevelServices(List<ServiceDescriptor> serviceList) {
         for (var service : serviceList) {
@@ -54,30 +54,26 @@ public abstract class ProtobufTypeCollector {
         }
     }
 
-    private void flatten(Descriptor messageType,
-                         ProtobufTypeFileName javaFileName) {
+    private void flatten(Descriptor messageType, FileName javaFileName) {
         addNewMessageType(messageType, javaFileName);
         walkInnerEnumTypes(messageType.getEnumTypes(), javaFileName);
         walkNestedTypes(messageType.getNestedTypes(), javaFileName);
     }
 
-    private void walkNestedTypes(List<Descriptor> messageTypeList,
-                                 ProtobufTypeFileName javaFileName) {
+    private void walkNestedTypes(List<Descriptor> messageTypeList, FileName javaFileName) {
         for (var messageType : messageTypeList) {
             flatten(messageType, javaFileName);
         }
     }
 
-    private void walkInnerEnumTypes(List<EnumDescriptor> enumTypeList,
-                                    ProtobufTypeFileName javaFileName) {
+    private void walkInnerEnumTypes(List<EnumDescriptor> enumTypeList, FileName javaFileName) {
         for (var enumType : enumTypeList) {
             addNewEnumType(enumType, javaFileName);
         }
     }
 
-    private void addNewService(ServiceDescriptor service,
-                               ProtobufTypeFileName javaFileName) {
-        builder.addService(
+    private void addNewService(ServiceDescriptor service, FileName javaFileName) {
+        typeSetBuilder.addService(
                 ProtobufType.newBuilder()
                         .setName(service.getFullName())
                         .setJavaFileName(javaFileName)
@@ -86,9 +82,8 @@ public abstract class ProtobufTypeCollector {
         );
     }
 
-    private void addNewEnumType(EnumDescriptor enumType,
-                                ProtobufTypeFileName javaFileName) {
-        builder.addEnumType(
+    private void addNewEnumType(EnumDescriptor enumType, FileName javaFileName) {
+        typeSetBuilder.addEnumType(
                 ProtobufType.newBuilder()
                         .setName(enumType.getFullName())
                         .setJavaFileName(javaFileName)
@@ -97,9 +92,8 @@ public abstract class ProtobufTypeCollector {
         );
     }
 
-    private void addNewMessageType(Descriptor messageType,
-                                   ProtobufTypeFileName javaFileName) {
-        builder.addMessageType(
+    private void addNewMessageType(Descriptor messageType, FileName javaFileName) {
+        typeSetBuilder.addMessageType(
                 ProtobufType.newBuilder()
                         .setName(messageType.getFullName())
                         .setJavaFileName(javaFileName)

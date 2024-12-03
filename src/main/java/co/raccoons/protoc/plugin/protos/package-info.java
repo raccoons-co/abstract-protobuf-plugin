@@ -4,4 +4,4 @@
  * @license MIT
  */
 
-package co.raccoons.protoc.plugin.protofile;
+package co.raccoons.protoc.plugin.protos;

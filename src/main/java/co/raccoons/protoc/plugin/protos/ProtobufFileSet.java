@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-package co.raccoons.protoc.plugin.protofile;
+package co.raccoons.protoc.plugin.protos;
 
 import co.raccoons.protoc.plugin.ProtobufTypeSet;
 import com.google.common.collect.ImmutableMap;
