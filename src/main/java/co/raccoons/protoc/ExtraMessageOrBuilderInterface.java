@@ -13,7 +13,7 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
 @Immutable
-public class ExtraMessageOrBuilderInterfaces extends AbstractCodeGenerator {
+public class ExtraMessageOrBuilderInterface extends AbstractCodeGenerator {
 
     @Override
     protected File generate(ProtobufType type) {
