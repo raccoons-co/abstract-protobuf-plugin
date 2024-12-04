@@ -171,7 +171,6 @@
                         <arg>-XDcompilePolicy=simple</arg>
                         <arg>--should-stop=ifError=FLOW</arg>
                         <arg>-Xplugin:ErrorProne</arg>
-                        <arg>-XepDisableWarningsInGeneratedCode</arg>
                     </compilerArgs>
                     <annotationProcessorPaths>
                         <path>
