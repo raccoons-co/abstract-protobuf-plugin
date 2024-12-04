@@ -6,6 +6,7 @@
 
 package co.raccoons.protoc.plugin.protos;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 
@@ -17,11 +18,12 @@ import static java.lang.String.format;
  *
  * @param <T> the protocol message type
  */
+@Immutable(containerOf = "T")
 final class JavaFileName<T extends GenericDescriptor> {
 
     private static final String CLASS_PATTERN = "%s/%s.java";
-    private static final String BUILDER_PATTERN = "%s/%sOrBuilder.java";
-    private static final String EMPTY_OUTER_CLASS_PATTERN = "%s/%sOuterClass.java";
+    private static final String MESSAGE_OR_BUILDER_PATTERN = "%s/%sOrBuilder.java";
+    private static final String NO_OUTER_CLASS_PATTERN = "%s/%sOuterClass.java";
 
     private final T descriptor;
 
@@ -30,59 +32,64 @@ final class JavaFileName<T extends GenericDescriptor> {
     }
 
     /**
-     * Returns new instance of {@code JavaFileName} ot the given protocol
+     * Returns new instance of {@code JavaFileName} of the given protocol
      * message type.
      */
     public static <T extends GenericDescriptor> JavaFileName<T> of(T descriptor) {
-        return new JavaFileName<T>(descriptor);
+        return new JavaFileName<>(descriptor);
     }
 
     /**
-     * Obtains relative java file name for message type class.
+     * Obtains relative java file name for Message type class.
      */
     public String forClass() {
         return format(CLASS_PATTERN, directory(), simpleName());
     }
 
     /**
-     * Obtains relative java file name for message or builder type class.
+     * Obtains relative java file name for MessageOrBuilder type class.
      */
-    public String forBuilder() {
-        return format(BUILDER_PATTERN, directory(), simpleName());
+    public String forMessageOrBuilder() {
+        return format(MESSAGE_OR_BUILDER_PATTERN, directory(), simpleName());
     }
 
     /**
-     * Obtains relative java file name for type outer class.
+     * Obtains relative java file name for Outer class.
      */
     public String forOuterClass() {
         return hasJavaOuterClassname()
-                ? format(CLASS_PATTERN, directory(), outerClassName())
-                : format(EMPTY_OUTER_CLASS_PATTERN, directory(), simpleName());
+                ? format(CLASS_PATTERN, directory(), javaOuterClassName())
+                : format(NO_OUTER_CLASS_PATTERN, directory(), simpleName());
     }
 
     private String directory() {
-        return descriptor.getFile()
-                .getOptions()
-                .getJavaPackage()
-                .replaceAll("\\.", "/");
+        return javaPackage().replaceAll("\\.", "/");
     }
 
     private String simpleName() {
         var name = descriptor.getName();
         return (descriptor instanceof FileDescriptor)
-                ? capitalize(name).replaceAll("\\.proto$", "")
+                ? fromProtoFileName(name)
                 : name;
+    }
+
+    private String fromProtoFileName(String name) {
+        return capitalize(name).replaceAll("\\.proto$", "");
     }
 
     private String capitalize(String str) {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
+    private String javaPackage() {
+        return descriptor.getFile().getOptions().getJavaPackage();
+    }
+
     private boolean hasJavaOuterClassname() {
         return descriptor.getFile().getOptions().hasJavaOuterClassname();
     }
 
-    private String outerClassName() {
+    private String javaOuterClassName() {
         return descriptor.getFile().getOptions().getJavaOuterClassname();
     }
 }

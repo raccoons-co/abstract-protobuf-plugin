@@ -7,6 +7,7 @@
 package co.raccoons.protoc.plugin.protos;
 
 import co.raccoons.protoc.plugin.ProtobufTypeSet;
+import co.raccoons.protoc.plugin.ProtobufTypeSet.Builder;
 import com.google.common.collect.ImmutableMap;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -19,6 +20,9 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A set of Proto files of with their dependencies.
+ */
 @Immutable
 public final class ProtobufFileSet {
 
@@ -28,19 +32,25 @@ public final class ProtobufFileSet {
         this.files = checkNotNull(files);
     }
 
+    /**
+     * Returns a new instance of {@code ProtobufFileSet} for the given proto
+     * file list.
+     */
     public static ProtobufFileSet of(Iterable<FileDescriptorProto> protos) {
         checkNotNull(protos);
         var files = files(protos);
         return new ProtobufFileSet(files);
     }
 
+    /**
+     * Obtains a new instance of {@code ProtobufTypeSet} from the list of
+     * requested to generate files.
+     */
     public ProtobufTypeSet newProtobufTypeSet(ProtocolStringList fileToGenerateList) {
+        checkNotNull(fileToGenerateList);
         var builder = ProtobufTypeSet.newBuilder();
         for (var fileName : fileToGenerateList) {
-            var protoFile = files.get(fileName);
-            JavaMultipleFilesOrSingle.of(protoFile)
-                    .newProtobufTypeCollector(builder)
-                    .collect();
+            newCollector(fileName, builder).collect();
         }
         return builder.build();
     }
@@ -64,24 +74,11 @@ public final class ProtobufFileSet {
         return ImmutableMap.copyOf(files);
     }
 
-    @Immutable
-    private static final class JavaMultipleFilesOrSingle {
-
-        private final FileDescriptor protoFile;
-
-        public JavaMultipleFilesOrSingle(FileDescriptor protoFile) {
-            this.protoFile = checkNotNull(protoFile);
-        }
-
-        public static JavaMultipleFilesOrSingle of(FileDescriptor protoFile) {
-            checkNotNull(protoFile);
-            return new JavaMultipleFilesOrSingle(protoFile);
-        }
-
-        public ProtobufTypeCollector newProtobufTypeCollector(ProtobufTypeSet.Builder builder) {
-            return protoFile.getOptions().getJavaMultipleFiles()
-                    ? new JavaMultipleFile(protoFile, builder)
-                    : new JavaSingleFile(protoFile, builder);
-        }
+    private ProtobufTypeCollector newCollector(String fileName, Builder builder) {
+        var protoFile = files.get(fileName);
+        checkNotNull(protoFile);
+        return protoFile.getOptions().getJavaMultipleFiles()
+                ? new JavaMultipleFile(protoFile, builder)
+                : new JavaSingleFile(protoFile, builder);
     }
 }

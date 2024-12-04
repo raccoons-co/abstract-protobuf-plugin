@@ -4,4 +4,7 @@
  * @license MIT
  */
 
+@CheckReturnValue
 package co.raccoons.protoc.plugin.protos;
+
+import com.google.errorprone.annotations.CheckReturnValue;

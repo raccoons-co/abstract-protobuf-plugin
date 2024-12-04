@@ -12,7 +12,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public abstract class ProtobufTypeCollector {
+abstract class ProtobufTypeCollector {
 
     private final FileDescriptor protoFile;
     private final ProtobufTypeSet.Builder typeSetBuilder;
@@ -24,7 +24,6 @@ public abstract class ProtobufTypeCollector {
     }
 
     public final void collect() {
-        checkNotNull(protoFile);
         walkTopLevelServices(protoFile.getServices());
         walkTopLevelEnumTypes(protoFile.getEnumTypes());
         walkTopLevelMessageTypes(protoFile.getMessageTypes());
@@ -35,6 +34,8 @@ public abstract class ProtobufTypeCollector {
     protected abstract FileName fileNameFor(EnumDescriptor enumType);
 
     protected abstract FileName fileNameFor(Descriptor messageType);
+
+    protected abstract FileName fileNameForInner(Descriptor messageType);
 
     private void walkTopLevelServices(List<ServiceDescriptor> serviceList) {
         for (var service : serviceList) {
@@ -50,18 +51,19 @@ public abstract class ProtobufTypeCollector {
 
     private void walkTopLevelMessageTypes(List<Descriptor> messageTypeList) {
         for (var messageType : messageTypeList) {
-            flatten(messageType, fileNameFor(messageType));
+            addNewMessageType(messageType, fileNameFor(messageType));
+            flatten(messageType, fileNameForInner(messageType));
         }
     }
 
     private void flatten(Descriptor messageType, FileName javaFileName) {
-        addNewMessageType(messageType, javaFileName);
         walkInnerEnumTypes(messageType.getEnumTypes(), javaFileName);
         walkNestedTypes(messageType.getNestedTypes(), javaFileName);
     }
 
     private void walkNestedTypes(List<Descriptor> messageTypeList, FileName javaFileName) {
         for (var messageType : messageTypeList) {
+            addNewMessageType(messageType, javaFileName);
             flatten(messageType, javaFileName);
         }
     }

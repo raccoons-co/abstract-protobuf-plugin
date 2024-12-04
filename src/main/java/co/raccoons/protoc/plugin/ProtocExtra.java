@@ -9,7 +9,7 @@ package co.raccoons.protoc.plugin;
 import static java.lang.String.format;
 
 /**
- * Represents insertion point names.
+ * Represents extension of the code generator output.
  *
  * @see <a href="https://protobuf.dev/reference/java/java-generated/#plugins">
  * Plugin Insertion Points</a>
@@ -17,35 +17,46 @@ import static java.lang.String.format;
 public enum ProtocExtra {
 
     /**
-     * Extra Message Interfaces.
+     * Extra interface of the Message type class.
      */
     message_implements,
 
     /**
-     * Extra Builder Interfaces.
+     * Extra interface of the Builder class.
      */
     builder_implements,
 
+    /**
+     * Extra code of the Message type class.
+     */
     class_scope,
 
+    /**
+     * Extra code of Builder class.
+     */
     builder_scope,
 
+    /**
+     * Extra code of Enum.
+     */
     enum_scope,
 
     /**
-     * Extra MessageOrBuilder Interfaces.
+     * Extra interface of the MessageOrBuilder interface.
      */
     interface_extends {
         @Override
-        protected String relativeFileName(ProtobufType type) {
-            return type.getJavaFileName().getBuilderName();
+        protected String javaFileName(ProtobufType type) {
+            return type.getJavaFileName().getMessageOrBuilderName();
         }
     },
 
-
+    /**
+     * Extra code of wrapper class.
+     */
     outer_class_scope {
         @Override
-        protected String relativeFileName(ProtobufType type) {
+        protected String javaFileName(ProtobufType type) {
             return type.getJavaFileName().getOuterClassName();
         }
 
@@ -55,21 +66,24 @@ public enum ProtocExtra {
         }
     };
 
+    /**
+     * Obtains a new instance of the {@code InsertionPoint} for the given type.
+     */
     public InsertionPoint newInsertionPoint(ProtobufType type) {
         return InsertionPoint.newBuilder()
-                .setFileName(relativeFileName(type))
+                .setFileName(javaFileName(type))
                 .setIdentifier(identifier(type))
                 .build();
     }
 
     /**
-     * Returns insertion point identifier for the given type name.
+     * Returns insertion point identifier of the given type.
      */
     protected String identifier(ProtobufType type) {
         return format("%s:%s", name(), type.getName());
     }
 
-    protected String relativeFileName(ProtobufType type) {
+    protected String javaFileName(ProtobufType type) {
         return type.getJavaFileName().getName();
     }
 }

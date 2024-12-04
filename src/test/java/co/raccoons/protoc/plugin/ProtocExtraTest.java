@@ -30,7 +30,6 @@ class ProtocExtraTest {
     private ProtobufType protobufType() {
         return ProtobufType.newBuilder()
                 .setName("raccoons.protoc.Nothing")
-                .setJavaFileName()
                 .build();
     }
 
