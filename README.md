@@ -1,3 +1,7 @@
+[![GitHub Actions](https://github.com/raccoons-co/abstract-protobuf-plugin/actions/workflows/maven.yml/badge.svg)](https://github.com/raccoons-co/jru-telegrambot/actions)
+[![Codecov](https://codecov.io/gh/raccoons-co/abstract-protobuf-plugin/graph/badge.svg?token=y9xaNeJ4Lz)](https://codecov.io/gh/raccoons-co/abstract-protobuf-plugin)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=raccoons-co_abstract-protobuf-plugin&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=raccoons-co_abstract-protobuf-plugin)
+
 # Abstract Protobuf Plugin
 
 ### Developing Protobuf Compiler Plugin in Java

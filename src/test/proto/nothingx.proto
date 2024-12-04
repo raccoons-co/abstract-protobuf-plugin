@@ -17,6 +17,11 @@ message Nothing {
   message Else {
     string name = 1;
 
+    enum ElseEnum {
+      SOME = 0;
+    }
+
+
     message Matters {
       string name = 1 ;
 
@@ -41,6 +46,6 @@ enum TopLevelEnum {
 }
 
 service TopLevelService {
-
+  rpc Search(Nothing) returns (Another) {}
 }
 
