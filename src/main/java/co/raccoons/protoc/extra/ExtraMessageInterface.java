@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-package co.raccoons.protoc;
+package co.raccoons.protoc.extra;
 
 import co.raccoons.protoc.plugin.AbstractCodeGenerator;
 import co.raccoons.protoc.plugin.ProtobufType;
@@ -18,7 +18,6 @@ public class ExtraMessageInterface extends AbstractCodeGenerator {
     @Override
     protected File generate(ProtobufType type) {
         var insertionPoint = ProtocExtra.message_implements.newInsertionPoint(type);
-
         return File.newBuilder()
                 .setName(insertionPoint.getFileName())
                 .setInsertionPoint(insertionPoint.getIdentifier())

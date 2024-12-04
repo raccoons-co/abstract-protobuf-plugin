@@ -96,7 +96,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>co.raccoons.protoc.Plugin</mainClass>
+                            <mainClass>co.raccoons.protoc.extra.Plugin</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

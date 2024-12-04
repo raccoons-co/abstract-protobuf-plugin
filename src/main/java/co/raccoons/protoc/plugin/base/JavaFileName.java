@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-package co.raccoons.protoc.plugin.protos;
+package co.raccoons.protoc.plugin.base;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FileDescriptor;

@@ -48,15 +48,15 @@ class AbstractProtocPluginTest {
             }
         }.integrate();
 
-        assertTrue(outputStream.toString().contains("ExampleEvent.java"));
+        assertTrue(outputStream.toString().contains("ExampleMessage.java"));
         assertTrue(outputStream.toString().contains("message_implements:"));
-        assertTrue(outputStream.toString().contains("co.raccoons.event.Observable"));
+        assertTrue(outputStream.toString().contains("co.raccoons.event.Observable,"));
     }
 
     private final File file =
             File.newBuilder()
-                    .setName("ExampleEvent.java")
+                    .setName("ExampleMessage.java")
                     .setInsertionPoint("message_implements:")
-                    .setContent("co.raccoons.event.Observable")
+                    .setContent("co.raccoons.event.Observable,")
                     .build();
 }

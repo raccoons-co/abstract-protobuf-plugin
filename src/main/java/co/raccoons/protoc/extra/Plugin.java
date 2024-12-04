@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-package co.raccoons.protoc;
+package co.raccoons.protoc.extra;
 
 import co.raccoons.protoc.plugin.AbstractProtocPlugin;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;

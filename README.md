@@ -2,13 +2,13 @@
 [![Codecov](https://codecov.io/gh/raccoons-co/abstract-protobuf-plugin/graph/badge.svg?token=y9xaNeJ4Lz)](https://codecov.io/gh/raccoons-co/abstract-protobuf-plugin)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=raccoons-co_abstract-protobuf-plugin&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=raccoons-co_abstract-protobuf-plugin)
 
-# Abstract Protobuf Plugin
+# Developing Protobuf Compiler Plugin in Java
 
-### Developing Protobuf Compiler Plugin in Java
+### Abstract Protoc Plugin
 
 ---
 
-Let's simplify creation of Protoc Plugin with using the
+Let's simplify creation of Protobuf Compiler Plugin with using the
 `AbstractProtocPlugin`. This class has skeletal implementation to handle
 plugins' standard input and output streams.
 
@@ -36,8 +36,44 @@ public static void main(String[]args) {
     }.integrate();
 }
 ```
+ 
+### Abstract Code Generator
 
-### Applying plugin executable
+---
+
+The skeletal implementation of `AbstractCodeGenerator` handles processing of
+generating Java code extensions for any protocol message types.
+
+To introduce a concrete generator that extends the output produced by another 
+code generator (plugin), the programmer must extend `AbstractCodeGenerator` 
+class and implement the method `generate(...)` which returns an instance of
+`CodeGeneratorResponse.File`.
+
+One generator processes one protocol message type scope at a time. By default,
+this scope is limited to `ProtobufTypeScope.MESSAGE`. To change the scope the 
+protected method `typeScope()` needs to be overriden to return required scope 
+type.
+
+The `ProtocExtra` class helps to get `InsertionPoint` details for the given 
+Protobuf type.
+
+``` Java
+@Immutable
+public class ExtraMessageInterface extends AbstractCodeGenerator {
+
+    @Override
+    protected File generate(ProtobufType type) {
+        var insertionPoint = ProtocExtra.message_implements.newInsertionPoint(type);
+        return File.newBuilder()
+                .setName(insertionPoint.getFileName())
+                .setInsertionPoint(insertionPoint.getIdentifier())
+                .setContent("co.raccoons.event.Observable,")
+                .build();
+    }
+}
+```
+
+### Applying Plugin Executable
 
 ---
 
@@ -50,10 +86,10 @@ proto: clean $(GENERATED_OUT_DIR)
 proto: PROTO_PATH = ./src/main/proto
 proto:
     protoc \
-        --plugin=protoc-gen-example=./plugin.sh \
-        --example_out=$(GENERATED_OUT_DIR) \
-        --java_out=$(GENERATED_OUT_DIR) \
-        --proto_path=$(PROTO_PATH) \
+		--java_out=$(GENERATED_OUT_DIR) \
+		--plugin=protoc-gen-example=./plugin.sh \
+		--example_out=$(GENERATED_OUT_DIR) \
+		--proto_path=$(PROTO_PATH) \
         $(wildcard $(PROTO_PATH)/*.proto)
 ~~~
 

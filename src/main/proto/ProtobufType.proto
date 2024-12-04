@@ -4,7 +4,7 @@
 
 syntax = "proto3";
 
-package raccoons.protoc.plugin;
+package raccoons.protoc.plugin.base;
 
 option java_package = "co.raccoons.protoc.plugin";
 option java_outer_classname = "ProtobufTypeProto";
@@ -34,12 +34,10 @@ message ProtobufType {
   }
 }
 
+// A storage of protocol message types.
 message ProtobufTypeSet {
-  // A services storage.
   repeated ProtobufType service = 1;
-  // A enum types storage.
   repeated ProtobufType enum_type = 2;
-  // A message types storage.
   repeated ProtobufType message_type = 3;
 }
 
