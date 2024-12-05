@@ -54,8 +54,8 @@ this scope is limited to `ProtobufTypeScope.MESSAGE`. To change the scope the
 protected method `typeScope()` needs to be overriden to return required scope 
 type.
 
-The `ProtocExtra` class helps to get `InsertionPoint` details for the given 
-Protobuf type.
+There are two utility classes to help to set up 
+the response file - `ProtocExtra` and `Content`.
 
 ``` Java
 @Immutable
@@ -67,7 +67,7 @@ public class ExtraMessageInterface extends AbstractCodeGenerator {
         return File.newBuilder()
                 .setName(insertionPoint.getFileName())
                 .setInsertionPoint(insertionPoint.getIdentifier())
-                .setContent("co.raccoons.event.Observable,")
+                .setContent(inheritanceOf(EventBus.class))
                 .build();
     }
 }
@@ -92,10 +92,10 @@ proto: clean $(GENERATED_OUT_DIR)
 proto: PROTO_PATH = ./src/main/proto
 proto:
     protoc \
-		--java_out=$(GENERATED_OUT_DIR) \
-		--plugin=protoc-gen-example=./plugin.sh \
-		--example_out=$(GENERATED_OUT_DIR) \
-		--proto_path=$(PROTO_PATH) \
+        --java_out=$(GENERATED_OUT_DIR) \
+        --plugin=protoc-gen-example=./plugin.sh \
+        --example_out=$(GENERATED_OUT_DIR) \
+        --proto_path=$(PROTO_PATH) \
         $(wildcard $(PROTO_PATH)/*.proto)
 ~~~
 
