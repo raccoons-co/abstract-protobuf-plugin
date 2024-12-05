@@ -9,8 +9,11 @@ package co.raccoons.protoc.extra;
 import co.raccoons.protoc.plugin.AbstractCodeGenerator;
 import co.raccoons.protoc.plugin.ProtobufType;
 import co.raccoons.protoc.plugin.ProtocExtra;
+import com.google.common.eventbus.EventBus;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
+
+import static co.raccoons.protoc.plugin.Content.inheritanceOf;
 
 @Immutable
 public class ExtraMessageInterface extends AbstractCodeGenerator {
@@ -21,7 +24,7 @@ public class ExtraMessageInterface extends AbstractCodeGenerator {
         return File.newBuilder()
                 .setName(insertionPoint.getFileName())
                 .setInsertionPoint(insertionPoint.getIdentifier())
-                .setContent("co.raccoons.event.Observable,")
+                .setContent(inheritanceOf(EventBus.class))
                 .build();
     }
 }
