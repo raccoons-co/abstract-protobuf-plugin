@@ -78,8 +78,14 @@ public class ExtraMessageInterface extends AbstractCodeGenerator {
 ---
 
 The plugin should be named `protoc-gen-$NAME`, and will then be used when the
-flag `--${NAME}_out` is passed to protoc. The example of usage in the
-`Makefile` is given below
+flag `--${NAME}_out` is passed to protoc.
+
+The code generator that generates 
+the initial file and the one which inserts into it must both run as part of 
+a single invocation of protoc. Code generators are executed in the order in 
+which they appear on the command line.
+
+The example of usage in the `Makefile` is given below:
 
 ~~~ Makefile
 proto: clean $(GENERATED_OUT_DIR)
