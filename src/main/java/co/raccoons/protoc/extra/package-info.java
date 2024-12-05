@@ -4,4 +4,4 @@
  * @license MIT
  */
 
-package co.raccoons.protoc;
+package co.raccoons.protoc.extra;

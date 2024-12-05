@@ -6,7 +6,7 @@
 
 package co.raccoons.protoc.plugin;
 
-import co.raccoons.protoc.plugin.protos.ProtobufFileSet;
+import co.raccoons.protoc.plugin.base.ProtobufFileSet;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
@@ -21,8 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>
  * To implement a concrete code generator, the programmer needs to extend this
- * class and provide implementation for the {@code generateProtocExtra(...)}
- * method.
+ * class and provide implementation for the {@code generate(...)} method.
  * <p>
  * If a concrete code generator intended to process a Protobuf services
  * or enum types the {@code typeScope()} method needs to be overridden as well.

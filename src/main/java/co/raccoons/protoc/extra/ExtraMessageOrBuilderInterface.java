@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-package co.raccoons.protoc;
+package co.raccoons.protoc.extra;
 
 import co.raccoons.protoc.plugin.AbstractCodeGenerator;
 import co.raccoons.protoc.plugin.ProtobufType;

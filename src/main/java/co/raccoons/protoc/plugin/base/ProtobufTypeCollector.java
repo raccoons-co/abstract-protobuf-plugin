@@ -1,4 +1,4 @@
-package co.raccoons.protoc.plugin.protos;
+package co.raccoons.protoc.plugin.base;
 
 import co.raccoons.protoc.plugin.ProtobufType;
 import co.raccoons.protoc.plugin.ProtobufType.FileName;
@@ -12,6 +12,12 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * An abstract Protobuf types collector.
+ *
+ * The collector walks through the tree of types in the .proto file and adds
+ * them to type set builder.
+ */
 abstract class ProtobufTypeCollector {
 
     private final FileDescriptor protoFile;
@@ -23,6 +29,9 @@ abstract class ProtobufTypeCollector {
         this.typeSetBuilder = checkNotNull(typeSetBuilder);
     }
 
+    /**
+     * Process type collection from .proto file.
+     */
     public final void collect() {
         walkTopLevelServices(protoFile.getServices());
         walkTopLevelEnumTypes(protoFile.getEnumTypes());
