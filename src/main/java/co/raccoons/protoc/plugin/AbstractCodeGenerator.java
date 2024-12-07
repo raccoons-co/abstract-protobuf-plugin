@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * This class provides a skeletal implementation of the Protobuf to Java code
- * generator.
+ * generator to minimize the effort required to implement this interface.
  *
  * <p>
  * To implement a concrete code generator, the programmer needs to extend this
