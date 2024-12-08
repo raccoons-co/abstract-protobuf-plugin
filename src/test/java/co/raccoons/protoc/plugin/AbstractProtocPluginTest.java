@@ -5,6 +5,7 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
@@ -19,8 +20,7 @@ class AbstractProtocPluginTest {
     @DisplayName("throws exception")
     void throwsOnNullResponse() {
         var exception =
-                assertThrows(
-                        RuntimeException.class,
+                assertThrows(NullPointerException.class,
                         () ->
                                 new AbstractProtocPlugin() {
                                     @Override
@@ -35,7 +35,7 @@ class AbstractProtocPluginTest {
 
     @Test
     @DisplayName("writes to stdout")
-    void canWriteToSystemOut() {
+    void writesToSystemOut() {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
 
@@ -51,6 +51,24 @@ class AbstractProtocPluginTest {
         assertTrue(outputStream.toString().contains("ExampleMessage.java"));
         assertTrue(outputStream.toString().contains("message_implements:"));
         assertTrue(outputStream.toString().contains("co.raccoons.event.Observable,"));
+    }
+
+    @Test
+    @DisplayName("tries to read stdin")
+    void readsFromSystemIn() {
+        System.setIn(new ByteArrayInputStream("test".getBytes()));
+        var exception =
+                assertThrows(IllegalStateException.class,
+                        () ->
+                                new AbstractProtocPlugin() {
+                                    @Override
+                                    protected CodeGeneratorResponse response() {
+                                        request();
+                                        return null;
+                                    }
+                                }.integrate()
+                );
+        assertEquals("Unable to read code generator request.", exception.getMessage());
     }
 
     private final File file =
