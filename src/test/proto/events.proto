@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package raccoons.protoc.event;
+
+option java_package = "co.raccoons.example";
+option java_outer_classname = "MyEventProto";
+option java_multiple_files = true;
+
+import "raccoons/options.proto";
+
+message MyEvent {
+  option (extra).message_implements = "co.raccoons.event.Observable";
+  string name = 1;
+}

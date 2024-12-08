@@ -6,7 +6,7 @@
 
 package co.raccoons.protoc.plugin;
 
-import co.raccoons.protoc.plugin.base.ProtobufFileSet;
+import co.raccoons.protoc.plugin.core.ProtobufFileSet;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * This class provides a skeletal implementation of the Protobuf to Java code
- * generator.
+ * generator to minimize the effort required to implement this interface.
  *
  * <p>
  * To implement a concrete code generator, the programmer needs to extend this

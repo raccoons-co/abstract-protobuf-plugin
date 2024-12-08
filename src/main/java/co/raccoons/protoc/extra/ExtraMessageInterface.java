@@ -8,12 +8,11 @@ package co.raccoons.protoc.extra;
 
 import co.raccoons.protoc.plugin.AbstractCodeGenerator;
 import co.raccoons.protoc.plugin.ProtobufType;
-import co.raccoons.protoc.plugin.ProtocExtra;
 import com.google.common.eventbus.EventBus;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
-import static co.raccoons.protoc.plugin.Content.inheritanceOf;
+import static co.raccoons.protoc.extra.Content.inheritanceOf;
 
 @Immutable
 public class ExtraMessageInterface extends AbstractCodeGenerator {

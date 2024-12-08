@@ -1,4 +1,4 @@
-package co.raccoons.protoc.plugin.base;
+package co.raccoons.protoc.plugin.core;
 
 import co.raccoons.protoc.plugin.ProtobufType;
 import co.raccoons.protoc.plugin.ProtobufType.FileName;

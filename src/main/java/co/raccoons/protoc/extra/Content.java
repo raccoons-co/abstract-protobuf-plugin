@@ -4,10 +4,11 @@
  * @license MIT
  */
 
-package co.raccoons.protoc.plugin;
+package co.raccoons.protoc.extra;
 
 import com.google.errorprone.annotations.Immutable;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 /**
@@ -26,6 +27,7 @@ public final class Content {
      * content for the insertion point which implements or extends types.
      */
     public static <T> String inheritanceOf(Class<T> tClass) {
+        checkNotNull(tClass);
         return format("%s%s", tClass.getName(), SEPARATOR);
     }
 }

@@ -4,7 +4,7 @@
 
 syntax = "proto3";
 
-package raccoons.protoc.plugin.base;
+package raccoons.protoc.plugin;
 
 option java_package = "co.raccoons.protoc.plugin";
 option java_outer_classname = "ProtobufTypeProto";
@@ -40,4 +40,3 @@ message ProtobufTypeSet {
   repeated ProtobufType enum_type = 2;
   repeated ProtobufType message_type = 3;
 }
-

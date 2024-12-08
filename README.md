@@ -36,10 +36,40 @@ public static void main(String[]args) {
     }.integrate();
 }
 ```
+
+### Adding Custom Options
+
+---
+
+To define and use own options for Protocol Buffers the programmer must override 
+method `registerCustomOptions(...)` and  implement corresponding *.proto* files 
+as well.
+
+``` Java
+public static void main(String[] args) {
+    new AbstractProtocPlugin() {
+        @Override
+        protected void registerCustomOptions(ExtensionRegistry registry) {
+            OptionsProto.registerAllExtensions(registry);
+        }
+
+        @Override
+        protected CodeGeneratorResponse response() {
+            var request = request();
+            var messageInterfaces = new ExtraMessageInterface().process(request);
+            return CodeGeneratorResponse.newBuilder()
+                    .addAllFile(messageInterfaces)
+                    .build();
+        }
+    }.integrate();
+}
+```
  
 ### Abstract Code Generator
 
 ---
+There is another abstraction that can be used as a part of a further plugin 
+development.
 
 The skeletal implementation of `AbstractCodeGenerator` handles processing of
 generating Java code extensions for any protocol message types.
@@ -53,9 +83,6 @@ One generator processes one protocol message type scope at a time. By default,
 this scope is limited to `ProtobufTypeScope.MESSAGE`. To change the scope the 
 protected method `typeScope()` needs to be overriden to return required scope 
 type.
-
-There are two utility classes to help to set up 
-the response file - `ProtocExtra` and `Content`.
 
 ``` Java
 @Immutable
@@ -101,6 +128,10 @@ proto:
 
 ### References
 
+---
+
 1. [plugin.proto](https://github.com/protocolbuffers/protobuf/blob/main/src/google/protobuf/compiler/plugin.proto)
 2. Protobuf compiler [api-docs](https://protobuf.dev/reference/java/api-docs/com/google/protobuf/compiler/package-summary.html)
-3. Extending Protobuf: [custom options](https://giorgio.azzinna.ro/2017/07/extending-protobuf-custom-options/)
+3. [descriptor.proto](https://github.com/protocolbuffers/protobuf/blob/main/src/google/protobuf/descriptor.proto)
+4. Extending Protobuf: [custom options](https://giorgio.azzinna.ro/2017/07/extending-protobuf-custom-options/)
+5. Programming-guides (proto3) [custom options](https://protobuf.dev/programming-guides/proto3/#customoptions)
