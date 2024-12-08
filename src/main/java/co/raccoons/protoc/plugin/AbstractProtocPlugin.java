@@ -7,6 +7,7 @@
 package co.raccoons.protoc.plugin;
 
 import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static co.raccoons.protoc.plugin.CustomOptionRegistry.newRegistry;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -40,19 +42,31 @@ public abstract class AbstractProtocPlugin {
     }
 
     /**
-     * Returns generated {@code CodeGeneratorResponse} for this plugin.
+     * Registers custom options.
      * <p>
-     * This method is intended to implement a concrete Protobuf compiler plugin.
+     * Designed to be overridden if plugin should to process custom options of
+     * Protocol Buffers.
      */
-    protected abstract CodeGeneratorResponse response();
+    protected void registerCustomOptions(ExtensionRegistry registry) {
+        // Intentionally empty.
+    }
 
     /**
-     * Obtains an encoded {@code CodeGeneratorRequest} that written to
+     * Obtains an encoded {@code CodeGeneratorRequest} that was written to
      * the plugin's stdin.
      */
     protected final CodeGeneratorRequest request() {
         return read(this::pluginInput);
     }
+
+    /**
+     * Returns generated {@code CodeGeneratorResponse} that will be written to
+     * the plugin's stdout.
+     * <p>
+     * This method is intended to implement a concrete Protobuf compiler plugin.
+     */
+    protected abstract CodeGeneratorResponse response();
+
 
     /**
      * Reads an encoded {@code CodeGeneratorRequest} that written to the plugin's
@@ -71,7 +85,8 @@ public abstract class AbstractProtocPlugin {
 
     private CodeGeneratorRequest pluginInput() {
         try {
-            return CodeGeneratorRequest.parseFrom(System.in);
+            var registry = newRegistry(this::registerCustomOptions);
+            return CodeGeneratorRequest.parseFrom(System.in, registry);
         } catch (IOException e) {
             throw new IllegalStateException("Unable to read code generator request.", e);
         }

@@ -6,7 +6,9 @@
 
 package co.raccoons.protoc.extra;
 
+import co.raccoons.protoc.OptionsProto;
 import co.raccoons.protoc.plugin.AbstractProtocPlugin;
+import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 
 /**
@@ -23,7 +25,12 @@ public final class Plugin {
     public static void main(String[] args) {
         new AbstractProtocPlugin() {
             @Override
-            public CodeGeneratorResponse response() {
+            protected void registerCustomOptions(ExtensionRegistry registry) {
+                OptionsProto.registerAllExtensions(registry);
+            }
+
+            @Override
+            protected CodeGeneratorResponse response() {
                 var request = request();
                 var messageInterfaces = new ExtraMessageInterface().process(request);
                 var messageOrBuilderInterfaces = new ExtraMessageOrBuilderInterface().process(request);

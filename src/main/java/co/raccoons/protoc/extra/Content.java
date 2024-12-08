@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-package co.raccoons.protoc.plugin;
+package co.raccoons.protoc.extra;
 
 import com.google.errorprone.annotations.Immutable;
 

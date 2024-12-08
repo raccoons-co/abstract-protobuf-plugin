@@ -4,7 +4,10 @@
  * @license MIT
  */
 
-package co.raccoons.protoc.plugin;
+package co.raccoons.protoc.extra;
+
+import co.raccoons.protoc.plugin.InsertionPoint;
+import co.raccoons.protoc.plugin.ProtobufType;
 
 import static java.lang.String.format;
 

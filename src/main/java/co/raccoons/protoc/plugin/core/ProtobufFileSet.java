@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-package co.raccoons.protoc.plugin.base;
+package co.raccoons.protoc.plugin.core;
 
 import co.raccoons.protoc.plugin.ProtobufTypeSet;
 import co.raccoons.protoc.plugin.ProtobufTypeSet.Builder;
