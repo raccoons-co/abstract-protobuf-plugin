@@ -4,7 +4,7 @@
 
 syntax = "proto3";
 
-package raccoons.protoc.plugin;
+package raccoons.protoc.extra;
 
 option java_package = "co.raccoons.protoc.plugin";
 option java_outer_classname = "InsertionPointProto";

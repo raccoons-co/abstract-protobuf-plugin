@@ -1,4 +1,10 @@
-package co.raccoons.protoc.plugin.base;
+/*
+ * Copyright 2024, Raccoons. Developing simple way to change.
+ *
+ * @license MIT
+ */
+
+package co.raccoons.protoc.plugin.core;
 
 import co.raccoons.protoc.plugin.ProtobufType.FileName;
 import co.raccoons.protoc.plugin.ProtobufTypeSet;
@@ -8,51 +14,46 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 
 /**
- * Protobuf type collector that generates single Java file.
+ * Protobuf type collector that generates multiple Java files.
  *
  * @see <a href="https://protobuf.dev/reference/java/java-generated/">
- * option java_multiple_files = false;</a>
+ * option java_multiple_files = true;</a>
  */
-final class JavaSingleFile extends ProtobufTypeCollector {
+final class JavaMultipleFile extends ProtobufTypeCollector {
 
-    public JavaSingleFile(FileDescriptor protoFile, ProtobufTypeSet.Builder builder) {
+    public JavaMultipleFile(FileDescriptor protoFile, ProtobufTypeSet.Builder builder) {
         super(protoFile, builder);
     }
 
     @Override
     protected FileName fileNameFor(ServiceDescriptor service) {
-        var protoFile = service.getFile();
         return FileName.newBuilder()
-                .setName(JavaFileName.of(protoFile).forOuterClass())
+                .setName(JavaFileName.of(service).forClass())
                 .build();
     }
 
     @Override
     protected FileName fileNameFor(EnumDescriptor enumType) {
-        var protoFile = enumType.getFile();
         return FileName.newBuilder()
-                .setName(JavaFileName.of(protoFile).forOuterClass())
+                .setName(JavaFileName.of(enumType).forClass())
                 .build();
     }
 
     @Override
     protected FileName fileNameFor(Descriptor messageType) {
-        var protoFile = messageType.getFile();
-        var outerClassName = JavaFileName.of(protoFile).forOuterClass();
         return FileName.newBuilder()
-                .setName(outerClassName)
-                .setMessageOrBuilderName(outerClassName)
-                .setOuterClassName(outerClassName)
+                .setName(JavaFileName.of(messageType).forClass())
+                .setMessageOrBuilderName(JavaFileName.of(messageType).forMessageOrBuilder())
+                .setOuterClassName(JavaFileName.of(messageType).forOuterClass())
                 .build();
     }
 
-    @Override
     protected FileName fileNameForInner(Descriptor messageType) {
-        var outerClassName = JavaFileName.of(messageType).forOuterClass();
         return FileName.newBuilder()
-                .setName(outerClassName)
-                .setMessageOrBuilderName(outerClassName)
-                .setOuterClassName(outerClassName)
+                .setName(JavaFileName.of(messageType).forClass())
+                .setMessageOrBuilderName(JavaFileName.of(messageType).forClass())
+                .setOuterClassName(JavaFileName.of(messageType).forOuterClass())
                 .build();
     }
+
 }

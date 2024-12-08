@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static co.raccoons.protoc.plugin.CustomOptionRegistry.newRegistry;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -84,7 +85,8 @@ public abstract class AbstractProtocPlugin {
 
     private CodeGeneratorRequest pluginInput() {
         try {
-            return CodeGeneratorRequest.parseFrom(System.in, newRegistry());
+            var registry = newRegistry(this::registerCustomOptions);
+            return CodeGeneratorRequest.parseFrom(System.in, registry);
         } catch (IOException e) {
             throw new IllegalStateException("Unable to read code generator request.", e);
         }
@@ -97,11 +99,5 @@ public abstract class AbstractProtocPlugin {
         } catch (IOException e) {
             throw new IllegalStateException("Unable to write code generator response.", e);
         }
-    }
-
-    private ExtensionRegistry newRegistry() {
-        var registry = ExtensionRegistry.newInstance();
-        registerCustomOptions(registry);
-        return registry;
     }
 }

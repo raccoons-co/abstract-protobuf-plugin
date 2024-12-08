@@ -6,7 +6,7 @@
 
 package co.raccoons.protoc.plugin;
 
-import co.raccoons.protoc.plugin.base.ProtobufFileSet;
+import co.raccoons.protoc.plugin.core.ProtobufFileSet;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 

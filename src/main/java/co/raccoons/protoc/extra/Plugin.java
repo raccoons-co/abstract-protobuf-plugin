@@ -30,7 +30,7 @@ public final class Plugin {
             }
 
             @Override
-            public CodeGeneratorResponse response() {
+            protected CodeGeneratorResponse response() {
                 var request = request();
                 var messageInterfaces = new ExtraMessageInterface().process(request);
                 var messageOrBuilderInterfaces = new ExtraMessageOrBuilderInterface().process(request);
