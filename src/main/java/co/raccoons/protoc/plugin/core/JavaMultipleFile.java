@@ -7,7 +7,6 @@
 package co.raccoons.protoc.plugin.core;
 
 import co.raccoons.protoc.plugin.ProtobufType.FileName;
-import co.raccoons.protoc.plugin.ProtobufTypeSet;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -21,8 +20,8 @@ import com.google.protobuf.Descriptors.ServiceDescriptor;
  */
 final class JavaMultipleFile extends ProtobufTypeCollector {
 
-    public JavaMultipleFile(FileDescriptor protoFile, ProtobufTypeSet.Builder builder) {
-        super(protoFile, builder);
+    public JavaMultipleFile(FileDescriptor protoFile) {
+        super(protoFile);
     }
 
     @Override

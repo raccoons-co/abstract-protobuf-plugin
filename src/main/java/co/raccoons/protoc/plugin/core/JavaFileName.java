@@ -6,9 +6,14 @@
 
 package co.raccoons.protoc.plugin.core;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
+
+import java.util.Arrays;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -73,11 +78,20 @@ final class JavaFileName<T extends GenericDescriptor> {
                 : name;
     }
 
-    private String fromProtoFileName(String name) {
-        return capitalize(name).replaceAll("\\.proto$", "");
+    @VisibleForTesting
+    public static String fromProtoFileName(String name) {
+        var simpleName = name.replaceAll("\\.proto$", "");
+        return snakeToCamel(simpleName);
     }
 
-    private String capitalize(String str) {
+    private static String snakeToCamel(String snake){
+        return Arrays.stream(snake.split("_"))
+                .filter(Predicate.not(String::isEmpty))
+                .map(JavaFileName::capitalize)
+                .collect(Collectors.joining());
+    }
+
+    private static String capitalize(String str) {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 

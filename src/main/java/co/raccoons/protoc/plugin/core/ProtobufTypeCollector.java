@@ -2,7 +2,7 @@ package co.raccoons.protoc.plugin.core;
 
 import co.raccoons.protoc.plugin.ProtobufType;
 import co.raccoons.protoc.plugin.ProtobufType.FileName;
-import co.raccoons.protoc.plugin.ProtobufTypeSet;
+import co.raccoons.protoc.plugin.ProtocolType;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -14,19 +14,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An abstract Protobuf types collector.
- *
+ * <p>
  * The collector walks through the tree of types in the .proto file and adds
  * them to type set builder.
  */
 abstract class ProtobufTypeCollector {
 
     private final FileDescriptor protoFile;
-    private final ProtobufTypeSet.Builder typeSetBuilder;
 
-    protected ProtobufTypeCollector(FileDescriptor protoFile,
-                                    ProtobufTypeSet.Builder typeSetBuilder) {
+    protected ProtobufTypeCollector(FileDescriptor protoFile) {
         this.protoFile = checkNotNull(protoFile);
-        this.typeSetBuilder = checkNotNull(typeSetBuilder);
     }
 
     /**
@@ -84,32 +81,38 @@ abstract class ProtobufTypeCollector {
     }
 
     private void addNewService(ServiceDescriptor service, FileName javaFileName) {
-        typeSetBuilder.addService(
-                ProtobufType.newBuilder()
-                        .setName(service.getFullName())
-                        .setJavaFileName(javaFileName)
-                        .setService(service.toProto())
-                        .build()
-        );
+        /*ProtobufType.newBuilder()
+                .setName(service.getFullName())
+                .setJavaFileName(javaFileName)
+                .setService(service.toProto())
+                .build();*/
     }
 
     private void addNewEnumType(EnumDescriptor enumType, FileName javaFileName) {
-        typeSetBuilder.addEnumType(
-                ProtobufType.newBuilder()
-                        .setName(enumType.getFullName())
-                        .setJavaFileName(javaFileName)
-                        .setEnumType(enumType.toProto())
-                        .build()
-        );
+        var type = ProtobufType.newBuilder()
+                .setName(enumType.getFullName())
+                .setJavaFileName(javaFileName)
+                .setEnumType(enumType.toProto())
+                .build();
+
+        ProtocolType.newBuilder()
+                .setProtobufType(type)
+                .setEnumType(enumType.toProto())
+                .build()
+                .post();
     }
 
     private void addNewMessageType(Descriptor messageType, FileName javaFileName) {
-        typeSetBuilder.addMessageType(
-                ProtobufType.newBuilder()
-                        .setName(messageType.getFullName())
-                        .setJavaFileName(javaFileName)
-                        .setMessageType(messageType.toProto())
-                        .build()
-        );
+        var type = ProtobufType.newBuilder()
+                .setName(messageType.getFullName())
+                .setJavaFileName(javaFileName)
+                .setMessageType(messageType.toProto())
+                .build();
+
+        ProtocolType.newBuilder()
+                .setProtobufType(type)
+                .setMessageType(messageType.toProto())
+                .build()
+                .post();
     }
 }

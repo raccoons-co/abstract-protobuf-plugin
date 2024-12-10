@@ -4,8 +4,4 @@
  * @license MIT
  */
 
-package co.raccoons.protoc.extra.given;
-
-public class ClassMock {
-}
-
+package co.raccoons.protoc.plugin.base;

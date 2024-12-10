@@ -1,14 +1,29 @@
+// Copyright 2024, Raccoons. Developing simple way to change.
+//
+// @license MIT
+
 syntax = "proto3";
 
-package raccoons.protoc.event;
+package raccoons.protoc.plugin.eventbus;
 
-option java_package = "co.raccoons.example";
-option java_outer_classname = "MyEventProto";
+option java_package = "co.raccoons.protoc.plugin";
+option java_outer_classname = "ProtocolTypeProto";
 option java_multiple_files = true;
 
+import "google/protobuf/descriptor.proto";
 import "raccoons/options.proto";
+import "raccoons/protoc/plugin/protobuf_type.proto";
 
-message MyEvent {
-  option (extra).message_implements = "co.raccoons.event.Observable";
-  string name = 1;
+// Describes a Protocol Buffer message type.
+message ProtocolType {
+
+  option (extra).message_implements = "co.raccoons.eventbus.Observable";
+
+  ProtobufType protobuf_type = 1;
+
+  oneof descriptor {
+    google.protobuf.ServiceDescriptorProto service = 11;
+    google.protobuf.EnumDescriptorProto enum_type = 12;
+    google.protobuf.DescriptorProto message_type = 13;
+  };
 }
