@@ -84,6 +84,14 @@
             <version>3.11.2</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/build-helper-maven-plugin -->
+        <dependency>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>3.6.0</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
@@ -136,12 +144,16 @@
                 </executions>
                 <configuration>
                     <protocArtifact>com.google.protobuf:protoc:3.25.5:exe:${os.detected.classifier}</protocArtifact>
+                    <useArgumentFile>true</useArgumentFile>
                 </configuration>
             </plugin>
 
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.2</version>
+                <configuration>
+                </configuration>
+
             </plugin>
 
             <plugin>
@@ -211,6 +223,26 @@
                         <goals>
                             <goal>check</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>generated/</source>
+                            </sources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

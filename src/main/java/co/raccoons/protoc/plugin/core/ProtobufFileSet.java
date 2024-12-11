@@ -6,8 +6,6 @@
 
 package co.raccoons.protoc.plugin.core;
 
-import co.raccoons.protoc.plugin.ProtobufTypeSet;
-import co.raccoons.protoc.plugin.ProtobufTypeSet.Builder;
 import com.google.common.collect.ImmutableMap;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -46,13 +44,11 @@ public final class ProtobufFileSet {
      * Obtains a new instance of {@code ProtobufTypeSet} from the list of
      * requested to generate files.
      */
-    public ProtobufTypeSet newProtobufTypeSet(ProtocolStringList fileToGenerateList) {
+    public void runCollector(ProtocolStringList fileToGenerateList) {
         checkNotNull(fileToGenerateList);
-        var builder = ProtobufTypeSet.newBuilder();
         for (var fileName : fileToGenerateList) {
-            newCollector(fileName, builder).collect();
+            newCollector(fileName).collect();
         }
-        return builder.build();
     }
 
     private static ImmutableMap<String, FileDescriptor> files(Iterable<FileDescriptorProto> protos) {
@@ -74,11 +70,11 @@ public final class ProtobufFileSet {
         return ImmutableMap.copyOf(files);
     }
 
-    private ProtobufTypeCollector newCollector(String fileName, Builder builder) {
+    private ProtobufTypeCollector newCollector(String fileName) {
         var protoFile = files.get(fileName);
         checkNotNull(protoFile);
         return protoFile.getOptions().getJavaMultipleFiles()
-                ? new JavaMultipleFile(protoFile, builder)
-                : new JavaSingleFile(protoFile, builder);
+                ? new JavaMultipleFile(protoFile)
+                : new JavaSingleFile(protoFile);
     }
 }

@@ -21,22 +21,6 @@ The protected method `request()` returns the instance of the
 `CodeGeneratorRequest` which has been read from plugins' standard input.
 The request should be used for the further processing by your code generator.
 
-``` Java
-public static void main(String[]args) {
-    new AbstractProtocPlugin() {
-        @Override
-        protected CodeGeneratorResponse response() {
-            var request = request();
-            var generator = new ExtraMessageInterface();
-            var files = generator.process(request);
-            return CodeGeneratorResponse.newBuilder()
-                    .addAllFile(files)
-                    .build();
-        }
-    }.integrate();
-}
-```
-
 ### Adding Custom Options
 
 ---
@@ -56,9 +40,12 @@ public static void main(String[] args) {
         @Override
         protected CodeGeneratorResponse response() {
             var request = request();
-            var messageInterfaces = new ExtraMessageInterface().process(request);
+            var generator = CodeGenerator.newBuilder()
+                    .addGenerator(new ExtraMessageInterface())
+                    .build();
+            var files = generator.process(request);
             return CodeGeneratorResponse.newBuilder()
-                    .addAllFile(messageInterfaces)
+                    .addAllFile(files)
                     .build();
         }
     }.integrate();
@@ -75,28 +62,33 @@ The skeletal implementation of `AbstractCodeGenerator` handles processing of
 generating Java code extensions for any protocol message types.
 
 To introduce a concrete generator that extends the output produced by another 
-code generator (plugin), the programmer must extend `AbstractCodeGenerator` 
-class and implement the method `generate(...)` which returns an instance of
+code generator, the programmer must extend `AbstractCodeGenerator`class and 
+implement the method `generate(...)` which returns an instance of
 `CodeGeneratorResponse.File`.
 
-One generator processes one protocol message type scope at a time. By default,
-this scope is limited to `ProtobufTypeScope.MESSAGE`. To change the scope the 
-protected method `typeScope()` needs to be overriden to return required scope 
-type.
-
 ``` Java
-@Immutable
-public class ExtraMessageInterface extends AbstractCodeGenerator {
+final class ExtraMessageInterface extends AbstractCodeGenerator {
 
     @Override
-    protected File generate(ProtobufType type) {
+    protected Predicate<ProtocolType> filter() {
+        return super.filter()
+                .and(ExtraMessageInterface::hasMessageType)
+                .and(ExtraMessageInterface::hasExtraOption);
+    }
+
+    @Override
+    protected File generate(ProtocolType protocolType) {
+        var type = protocolType.getProtobufType();
         var insertionPoint = ProtocExtra.message_implements.newInsertionPoint(type);
+        var content = content(protocolType);
+
         return File.newBuilder()
                 .setName(insertionPoint.getFileName())
                 .setInsertionPoint(insertionPoint.getIdentifier())
-                .setContent(inheritanceOf(EventBus.class))
+                .setContent(content)
                 .build();
     }
+    ...
 }
 ```
 

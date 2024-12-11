@@ -1,7 +1,6 @@
 package co.raccoons.protoc.plugin.core;
 
 import co.raccoons.protoc.plugin.ProtobufType.FileName;
-import co.raccoons.protoc.plugin.ProtobufTypeSet;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -15,8 +14,8 @@ import com.google.protobuf.Descriptors.ServiceDescriptor;
  */
 final class JavaSingleFile extends ProtobufTypeCollector {
 
-    public JavaSingleFile(FileDescriptor protoFile, ProtobufTypeSet.Builder builder) {
-        super(protoFile, builder);
+    public JavaSingleFile(FileDescriptor protoFile) {
+        super(protoFile);
     }
 
     @Override

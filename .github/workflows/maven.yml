@@ -11,6 +11,10 @@ jobs:
         with:
           java-version: 11
           cache: maven
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
+      - name: Run dev tool to generate source
+        run: make
       - name: Install dependencies
         run: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
       - name: Run tests and collect coverage

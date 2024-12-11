@@ -33,10 +33,3 @@ message ProtobufType {
     string outer_class_name = 3;
   }
 }
-
-// A storage of protocol message types.
-message ProtobufTypeSet {
-  repeated ProtobufType service = 1;
-  repeated ProtobufType enum_type = 2;
-  repeated ProtobufType message_type = 3;
-}
