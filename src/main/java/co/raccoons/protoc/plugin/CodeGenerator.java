@@ -43,7 +43,7 @@ public final class CodeGenerator {
     public Collection<File> process(CodeGeneratorRequest request) {
         checkNotNull(request);
         ProtobufFileSet.of(request.getProtoFileList())
-                .runCollector(request.getFileToGenerateList());
+                .runTreeWalker(request.getFileToGenerateList());
 
         return extensions();
     }

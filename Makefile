@@ -1,18 +1,20 @@
 GENERATED_OUT_DIR = ./generated
 
+.DEFAULT_GOAL := local
+
 .PHONY: proto
 proto: clean
 proto: $(GENERATED_OUT_DIR)
 proto: COMMON_PROTO_PATH=./src/main/proto
-proto: TEST_PROTO_PATH=./src/test/proto
+proto: DEV_PROTO_PATH=./src/dev/proto
 proto:
 	protoc \
 		--java_out=$(GENERATED_OUT_DIR) \
 		--plugin=protoc-gen-example=./plugin.sh \
 		--example_out=$(GENERATED_OUT_DIR) \
 		--proto_path=$(COMMON_PROTO_PATH) \
-		--proto_path=$(TEST_PROTO_PATH) \
-		$(wildcard $(TEST_PROTO_PATH)/*.proto)
+		--proto_path=$(DEV_PROTO_PATH) \
+		$(wildcard $(DEV_PROTO_PATH)/*.proto)
 
 # Removes generated directory entries
 .PHONY: clean

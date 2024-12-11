@@ -44,10 +44,10 @@ public final class ProtobufFileSet {
      * Obtains a new instance of {@code ProtobufTypeSet} from the list of
      * requested to generate files.
      */
-    public void runCollector(ProtocolStringList fileToGenerateList) {
+    public void runTreeWalker(ProtocolStringList fileToGenerateList) {
         checkNotNull(fileToGenerateList);
         for (var fileName : fileToGenerateList) {
-            newCollector(fileName).collect();
+            newTreeWalker(fileName).walk();
         }
     }
 
@@ -70,7 +70,7 @@ public final class ProtobufFileSet {
         return ImmutableMap.copyOf(files);
     }
 
-    private ProtobufTypeCollector newCollector(String fileName) {
+    private ProtobufTypeWalker newTreeWalker(String fileName) {
         var protoFile = files.get(fileName);
         checkNotNull(protoFile);
         return protoFile.getOptions().getJavaMultipleFiles()

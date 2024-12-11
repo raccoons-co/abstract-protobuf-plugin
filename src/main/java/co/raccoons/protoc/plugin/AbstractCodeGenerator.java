@@ -45,10 +45,12 @@ public abstract class AbstractCodeGenerator implements Subscribable {
      * Handles extra java code generation for any Protocol message types.
      */
     @Subscribe
-    @SuppressWarnings("ReturnValueIgnored")
     protected final void handle(ProtocolType protocolType) {
         checkNotNull(protocolType);
-        filter().and(this::addGeneratedFile).test(protocolType);
+        if (precondition().test(protocolType)) {
+            var file = generate(protocolType);
+            extensions.add(file);
+        }
     }
 
     /**
@@ -67,13 +69,8 @@ public abstract class AbstractCodeGenerator implements Subscribable {
      * }
      * </pre>
      */
-    protected Predicate<ProtocolType> filter() {
+    protected Predicate<ProtocolType> precondition() {
         return this::alwaysTrue;
-    }
-
-    private boolean addGeneratedFile(ProtocolType protocolType) {
-        var file = generate(protocolType);
-        return extensions.add(file);
     }
 
     private boolean alwaysTrue(ProtocolType ignored) {

@@ -33,8 +33,8 @@ import static java.lang.String.format;
 final class ExtraMessageInterface extends AbstractCodeGenerator {
 
     @Override
-    protected Predicate<ProtocolType> filter() {
-        return super.filter()
+    protected Predicate<ProtocolType> precondition() {
+        return super.precondition()
                 .and(ExtraMessageInterface::hasMessageType)
                 .and(ExtraMessageInterface::hasExtraOption);
     }

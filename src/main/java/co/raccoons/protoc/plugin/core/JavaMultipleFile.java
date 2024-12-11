@@ -18,7 +18,7 @@ import com.google.protobuf.Descriptors.ServiceDescriptor;
  * @see <a href="https://protobuf.dev/reference/java/java-generated/">
  * option java_multiple_files = true;</a>
  */
-final class JavaMultipleFile extends ProtobufTypeCollector {
+final class JavaMultipleFile extends ProtobufTypeWalker {
 
     public JavaMultipleFile(FileDescriptor protoFile) {
         super(protoFile);
