@@ -23,6 +23,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>
  * To introduce a concrete code generator the programmer must extend this class
  * and provide implementation for the method {@code generate(...)}.
+ * <p>
+ * By overriding the {@code precondition()} method, the programmer can filter
+ * any protocol message type that must be processed by the concrete generator.
  */
 public abstract class AbstractCodeGenerator implements Subscribable {
 
@@ -42,7 +45,10 @@ public abstract class AbstractCodeGenerator implements Subscribable {
     protected abstract File generate(ProtocolType protocolType);
 
     /**
-     * Handles extra java code generation for any Protocol message types.
+     * Handles extra java code generation for any protocol message types.
+     * <p>
+     * This method subscribes for the events posted by parser of protocol
+     * messages.
      */
     @Subscribe
     protected final void handle(ProtocolType protocolType) {
@@ -54,26 +60,28 @@ public abstract class AbstractCodeGenerator implements Subscribable {
     }
 
     /**
-     * This method is designed to be overridden. The programmer can filter any
-     * protocol message type that must be processed by the concrete generator.
+     * This method is designed to be overridden.
      * <p>
-     * If multiple predicates should be composed the method must call
+     * Returning predicate, the programmer can filter any protocol message type
+     * that must be processed by the concrete generator.
+     * <p>
+     * If multiple predicates should be composed, the method must call
      * {@code super.filter()} first.
      * <p>
      * Example:
      * <pre>
      * protected Predicate&lt;ProtocolType&gt; filter() {
-     *     return super.filter()
+     *     return super.precondition()
      *         .and(ExtraMessageInterface::hasMessageType)
      *         .and(ExtraMessageInterface::hasExtraOption);
      * }
      * </pre>
      */
     protected Predicate<ProtocolType> precondition() {
-        return this::alwaysTrue;
+        return AbstractCodeGenerator::alwaysTrue;
     }
 
-    private boolean alwaysTrue(ProtocolType ignored) {
+    private static boolean alwaysTrue(ProtocolType ignored) {
         return true;
     }
 }

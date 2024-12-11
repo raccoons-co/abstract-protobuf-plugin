@@ -13,16 +13,16 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An abstract protocol message types tree walker.
+ * A protocol message types tree walker.
  * <p>
- * The collector walks through the tree of types in the .proto file and adds
- * them to type set builder.
+ * Walks through the tree of types in the .proto file and posts an event for
+ * each found type.
  */
-abstract class ProtobufTypeWalker {
+abstract class ProtocolTypeWalker {
 
     private final FileDescriptor protoFile;
 
-    protected ProtobufTypeWalker(FileDescriptor protoFile) {
+    protected ProtocolTypeWalker(FileDescriptor protoFile) {
         this.protoFile = checkNotNull(protoFile);
     }
 

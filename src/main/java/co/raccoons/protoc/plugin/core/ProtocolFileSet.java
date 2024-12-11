@@ -11,7 +11,6 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import com.google.protobuf.ProtocolStringList;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,11 +21,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * A set of Proto files of with their dependencies.
  */
 @Immutable
-public final class ProtobufFileSet {
+public final class ProtocolFileSet {
 
     private final ImmutableMap<String, FileDescriptor> files;
 
-    private ProtobufFileSet(ImmutableMap<String, FileDescriptor> files) {
+    private ProtocolFileSet(ImmutableMap<String, FileDescriptor> files) {
         this.files = checkNotNull(files);
     }
 
@@ -34,21 +33,18 @@ public final class ProtobufFileSet {
      * Returns a new instance of {@code ProtobufFileSet} for the given proto
      * file list.
      */
-    public static ProtobufFileSet of(Iterable<FileDescriptorProto> protos) {
+    public static ProtocolFileSet of(Iterable<FileDescriptorProto> protos) {
         checkNotNull(protos);
         var files = files(protos);
-        return new ProtobufFileSet(files);
+        return new ProtocolFileSet(files);
     }
 
     /**
-     * Obtains a new instance of {@code ProtobufTypeSet} from the list of
-     * requested to generate files.
+     * Obtains proto file descripto for the given file name.
      */
-    public void runTreeWalker(ProtocolStringList fileToGenerateList) {
-        checkNotNull(fileToGenerateList);
-        for (var fileName : fileToGenerateList) {
-            newTreeWalker(fileName).walk();
-        }
+    public FileDescriptor file(String fileName){
+        checkNotNull(fileName);
+        return files.get(fileName);
     }
 
     private static ImmutableMap<String, FileDescriptor> files(Iterable<FileDescriptorProto> protos) {
@@ -68,13 +64,5 @@ public final class ProtobufFileSet {
             }
         }
         return ImmutableMap.copyOf(files);
-    }
-
-    private ProtobufTypeWalker newTreeWalker(String fileName) {
-        var protoFile = files.get(fileName);
-        checkNotNull(protoFile);
-        return protoFile.getOptions().getJavaMultipleFiles()
-                ? new JavaMultipleFile(protoFile)
-                : new JavaSingleFile(protoFile);
     }
 }
