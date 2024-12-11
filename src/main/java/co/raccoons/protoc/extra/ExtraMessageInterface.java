@@ -57,7 +57,7 @@ final class ExtraMessageInterface extends AbstractCodeGenerator {
                 .getOptions()
                 .getExtension(OptionsProto.extra)
                 .getMessageImplements();
-        checkArgument(isNullOrEmpty(messageImplements));
+        checkArgument(!isNullOrEmpty(messageImplements));
         return format("%s,", messageImplements);
     }
 
