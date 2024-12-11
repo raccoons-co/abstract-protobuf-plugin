@@ -1,6 +1,6 @@
 GENERATED_OUT_DIR = ./generated
 
-.DEFAULT_GOAL := local
+.DEFAULT_GOAL := proto
 
 .PHONY: proto
 proto: clean
