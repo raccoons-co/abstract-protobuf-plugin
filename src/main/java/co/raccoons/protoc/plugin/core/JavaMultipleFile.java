@@ -6,7 +6,7 @@
 
 package co.raccoons.protoc.plugin.core;
 
-import co.raccoons.protoc.plugin.ProtobufType.FileName;
+import co.raccoons.protoc.plugin.ProtocolType.FileName;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;

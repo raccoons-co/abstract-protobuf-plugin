@@ -8,7 +8,7 @@ package co.raccoons.protoc.extra;
 
 import co.raccoons.protoc.OptionsProto;
 import co.raccoons.protoc.plugin.AbstractCodeGenerator;
-import co.raccoons.protoc.plugin.Identifier;
+import co.raccoons.protoc.plugin.InsertionPointFactory;
 import co.raccoons.protoc.plugin.ProtocolType;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
@@ -41,16 +41,14 @@ final class ExtraMessageInterface extends AbstractCodeGenerator {
     }
 
     @Override
-    protected File generate(ProtocolType protocolType) {
-        var type = protocolType.getProtobufType();
-        var insertionPoint = ProtocExtra.message_implements.newInsertionPoint(type);
-
-        var identifier = Identifier.message_implements.forType(protocolType);
-        var content = messageImplementsContent(protocolType);
+    protected File generate(ProtocolType type) {
+        var insertionPoint =
+                InsertionPointFactory.message_implements.newInsertionPoint(type);
+        var content = messageImplementsContent(type);
 
         return File.newBuilder()
                 .setName(insertionPoint.getFileName())
-                .setInsertionPoint(identifier)
+                .setInsertionPoint(insertionPoint.getIdentifier())
                 .setContent(content)
                 .build();
     }

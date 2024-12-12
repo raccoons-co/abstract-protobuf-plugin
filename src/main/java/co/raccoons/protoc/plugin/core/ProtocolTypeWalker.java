@@ -1,8 +1,7 @@
 package co.raccoons.protoc.plugin.core;
 
-import co.raccoons.protoc.plugin.ProtobufType;
-import co.raccoons.protoc.plugin.ProtobufType.FileName;
 import co.raccoons.protoc.plugin.ProtocolType;
+import co.raccoons.protoc.plugin.ProtocolType.FileName;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -81,15 +80,9 @@ abstract class ProtocolTypeWalker {
     }
 
     private void addNewService(ServiceDescriptor service, FileName javaFileName) {
-        var type = ProtobufType.newBuilder()
-                .setName(service.getFullName())
-                .setJavaFileName(javaFileName)
-                .setService(service.toProto())
-                .build();
-
         ProtocolType.newBuilder()
                 .setName(service.getFullName())
-                .setProtobufType(type)
+                .setJavaFileName(javaFileName)
                 .setService(service.toProto())
                 .build()
                 .post();
@@ -97,30 +90,18 @@ abstract class ProtocolTypeWalker {
     }
 
     private void addNewEnumType(EnumDescriptor enumType, FileName javaFileName) {
-        var type = ProtobufType.newBuilder()
-                .setName(enumType.getFullName())
-                .setJavaFileName(javaFileName)
-                .setEnumType(enumType.toProto())
-                .build();
-
         ProtocolType.newBuilder()
                 .setName(enumType.getFullName())
-                .setProtobufType(type)
+                .setJavaFileName(javaFileName)
                 .setEnumType(enumType.toProto())
                 .build()
                 .post();
     }
 
     private void addNewMessageType(Descriptor messageType, FileName javaFileName) {
-        var type = ProtobufType.newBuilder()
-                .setName(messageType.getFullName())
-                .setJavaFileName(javaFileName)
-                .setMessageType(messageType.toProto())
-                .build();
-
         ProtocolType.newBuilder()
                 .setName(messageType.getFullName())
-                .setProtobufType(type)
+                .setJavaFileName(javaFileName)
                 .setMessageType(messageType.toProto())
                 .build()
                 .post();
