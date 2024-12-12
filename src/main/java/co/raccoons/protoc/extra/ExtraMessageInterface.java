@@ -9,6 +9,7 @@ package co.raccoons.protoc.extra;
 import co.raccoons.protoc.OptionsProto;
 import co.raccoons.protoc.plugin.AbstractCodeGenerator;
 import co.raccoons.protoc.plugin.ProtocolType;
+import co.raccoons.protoc.plugin.base.Identifier;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
 import java.util.function.Predicate;
@@ -33,8 +34,8 @@ import static java.lang.String.format;
 final class ExtraMessageInterface extends AbstractCodeGenerator {
 
     @Override
-    protected Predicate<ProtocolType> filter() {
-        return super.filter()
+    protected Predicate<ProtocolType> precondition() {
+        return super.precondition()
                 .and(ExtraMessageInterface::hasMessageType)
                 .and(ExtraMessageInterface::hasExtraOption);
     }
@@ -43,31 +44,32 @@ final class ExtraMessageInterface extends AbstractCodeGenerator {
     protected File generate(ProtocolType protocolType) {
         var type = protocolType.getProtobufType();
         var insertionPoint = ProtocExtra.message_implements.newInsertionPoint(type);
-        var content = content(protocolType);
+
+        var identifier = Identifier.message_implements.forType(protocolType);
+        var content = messageImplementsContent(protocolType);
 
         return File.newBuilder()
                 .setName(insertionPoint.getFileName())
-                .setInsertionPoint(insertionPoint.getIdentifier())
+                .setInsertionPoint(identifier)
                 .setContent(content)
                 .build();
     }
 
-    private String content(ProtocolType protocolType) {
+    private static boolean hasMessageType(ProtocolType protocolType) {
+        return protocolType.hasMessageType();
+    }
+    private static boolean hasExtraOption(ProtocolType protocolType) {
+        return protocolType.getMessageType()
+                .getOptions()
+                .hasExtension(OptionsProto.extra);
+    }
+
+    private static String messageImplementsContent(ProtocolType protocolType) {
         var messageImplements = protocolType.getMessageType()
                 .getOptions()
                 .getExtension(OptionsProto.extra)
                 .getMessageImplements();
         checkArgument(!isNullOrEmpty(messageImplements));
         return format("%s,", messageImplements);
-    }
-
-    private static boolean hasMessageType(ProtocolType protocolType) {
-        return protocolType.hasMessageType();
-    }
-
-    private static boolean hasExtraOption(ProtocolType protocolType) {
-        return protocolType.getMessageType()
-                .getOptions()
-                .hasExtension(OptionsProto.extra);
     }
 }

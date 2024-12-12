@@ -12,7 +12,7 @@ import com.google.protobuf.Descriptors.ServiceDescriptor;
  * @see <a href="https://protobuf.dev/reference/java/java-generated/">
  * option java_multiple_files = false;</a>
  */
-final class JavaSingleFile extends ProtobufTypeCollector {
+final class JavaSingleFile extends ProtocolTypeWalker {
 
     public JavaSingleFile(FileDescriptor protoFile) {
         super(protoFile);
