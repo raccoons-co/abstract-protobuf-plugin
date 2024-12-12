@@ -46,7 +46,7 @@ final class ExtraMessageInterface extends AbstractCodeGenerator {
         var insertionPoint = ProtocExtra.message_implements.newInsertionPoint(type);
 
         var identifier = Identifier.message_implements.forType(protocolType);
-        var content = content(protocolType);
+        var content = messageImplementsContent(protocolType);
 
         return File.newBuilder()
                 .setName(insertionPoint.getFileName())
@@ -55,22 +55,21 @@ final class ExtraMessageInterface extends AbstractCodeGenerator {
                 .build();
     }
 
-    private String content(ProtocolType protocolType) {
+    private static boolean hasMessageType(ProtocolType protocolType) {
+        return protocolType.hasMessageType();
+    }
+    private static boolean hasExtraOption(ProtocolType protocolType) {
+        return protocolType.getMessageType()
+                .getOptions()
+                .hasExtension(OptionsProto.extra);
+    }
+
+    private static String messageImplementsContent(ProtocolType protocolType) {
         var messageImplements = protocolType.getMessageType()
                 .getOptions()
                 .getExtension(OptionsProto.extra)
                 .getMessageImplements();
         checkArgument(!isNullOrEmpty(messageImplements));
         return format("%s,", messageImplements);
-    }
-
-    private static boolean hasMessageType(ProtocolType protocolType) {
-        return protocolType.hasMessageType();
-    }
-
-    private static boolean hasExtraOption(ProtocolType protocolType) {
-        return protocolType.getMessageType()
-                .getOptions()
-                .hasExtension(OptionsProto.extra);
     }
 }

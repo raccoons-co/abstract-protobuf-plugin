@@ -70,21 +70,21 @@ implement the method `generate(...)` which returns an instance of
 final class ExtraMessageInterface extends AbstractCodeGenerator {
 
     @Override
-    protected Predicate<ProtocolType> filter() {
-        return super.filter()
+    protected Predicate<ProtocolType> precondition() {
+        return super.precondition()
                 .and(ExtraMessageInterface::hasMessageType)
                 .and(ExtraMessageInterface::hasExtraOption);
     }
 
     @Override
     protected File generate(ProtocolType protocolType) {
-        var type = protocolType.getProtobufType();
-        var insertionPoint = ProtocExtra.message_implements.newInsertionPoint(type);
-        var content = content(protocolType);
-
+        var filename = "<TBD>";
+        var identifier = Identifier.message_implements.forType(protocolType);
+        var content = messageImplementsContent(protocolType);
+        
         return File.newBuilder()
-                .setName(insertionPoint.getFileName())
-                .setInsertionPoint(insertionPoint.getIdentifier())
+                .setName(fileName)
+                .setInsertionPoint(іdentifier)
                 .setContent(content)
                 .build();
     }
