@@ -6,7 +6,7 @@
 
 package co.raccoons.protoc.plugin;
 
-import co.raccoons.eventbus.Subscribable;
+import co.raccoons.common.eventbus.Subscribable;
 import com.google.common.eventbus.Subscribe;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
@@ -32,6 +32,21 @@ public abstract class AbstractCodeGenerator implements Subscribable {
     private final Set<File> extensions = new HashSet<>();
 
     /**
+     * Handles extra java code generation for any protocol message types.
+     * <p>
+     * This method subscribes for the events posted by parser of protocol
+     * messages.
+     */
+    @Subscribe
+    public final void handle(ProtocolType protocolType) {
+        checkNotNull(protocolType);
+        if (precondition().test(protocolType)) {
+            var file = generate(protocolType);
+            extensions.add(file);
+        }
+    }
+
+    /**
      * Returns extensions that adds extra java code.
      */
     public final Collection<File> extensions() {
@@ -43,21 +58,6 @@ public abstract class AbstractCodeGenerator implements Subscribable {
      * by another code generator for any protocol message type.
      */
     protected abstract File generate(ProtocolType protocolType);
-
-    /**
-     * Handles extra java code generation for any protocol message types.
-     * <p>
-     * This method subscribes for the events posted by parser of protocol
-     * messages.
-     */
-    @Subscribe
-    protected final void handle(ProtocolType protocolType) {
-        checkNotNull(protocolType);
-        if (precondition().test(protocolType)) {
-            var file = generate(protocolType);
-            extensions.add(file);
-        }
-    }
 
     /**
      * This method is designed to be overridden.

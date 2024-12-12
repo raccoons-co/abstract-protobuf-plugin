@@ -6,7 +6,7 @@
 
 package co.raccoons.protoc.plugin;
 
-import co.raccoons.eventbus.Subscribable;
+import co.raccoons.common.eventbus.Subscribable;
 import co.raccoons.protoc.plugin.core.ProtocolFile;
 import co.raccoons.protoc.plugin.core.ProtocolFileSet;
 import com.google.common.collect.ImmutableSet;

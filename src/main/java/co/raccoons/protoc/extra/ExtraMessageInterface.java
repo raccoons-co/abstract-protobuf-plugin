@@ -8,8 +8,8 @@ package co.raccoons.protoc.extra;
 
 import co.raccoons.protoc.OptionsProto;
 import co.raccoons.protoc.plugin.AbstractCodeGenerator;
+import co.raccoons.protoc.plugin.Identifier;
 import co.raccoons.protoc.plugin.ProtocolType;
-import co.raccoons.protoc.plugin.base.Identifier;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
 import java.util.function.Predicate;

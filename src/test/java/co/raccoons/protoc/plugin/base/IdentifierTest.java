@@ -7,6 +7,7 @@
 package co.raccoons.protoc.plugin.base;
 
 import co.raccoons.example.Nothing;
+import co.raccoons.protoc.plugin.Identifier;
 import co.raccoons.protoc.plugin.ProtocolType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

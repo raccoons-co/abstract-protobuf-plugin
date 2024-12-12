@@ -11,13 +11,13 @@ option java_outer_classname = "ProtocolTypeProto";
 option java_multiple_files = true;
 
 import "google/protobuf/descriptor.proto";
-import "raccoons/options.proto";
+import "raccoons/protoc/options.proto";
 import "raccoons/protoc/plugin/protobuf_type.proto";
 
 // Describes a Protocol Buffer message type.
 message ProtocolType {
 
-  option (extra).message_implements = "co.raccoons.eventbus.Observable";
+  option (extra).message_implements = "co.raccoons.common.eventbus.Observable";
 
   // A fully-qualified name of the protocol message type.
   string name = 1;

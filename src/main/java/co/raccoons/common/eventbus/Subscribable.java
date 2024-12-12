@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-package co.raccoons.eventbus;
+package co.raccoons.common.eventbus;
 /**
  *
  * Adds functionality of registering and unregistering subscriber methods.

@@ -4,9 +4,7 @@
  * @license MIT
  */
 
-package co.raccoons.protoc.plugin.base;
-
-import co.raccoons.protoc.plugin.ProtocolType;
+package co.raccoons.protoc.plugin;
 
 import static java.lang.String.format;
 
