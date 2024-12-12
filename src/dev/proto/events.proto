@@ -19,7 +19,10 @@ message ProtocolType {
 
   option (extra).message_implements = "co.raccoons.eventbus.Observable";
 
-  ProtobufType protobuf_type = 1;
+  // A fully-qualified name of the protocol message type.
+  string name = 1;
+
+  ProtobufType protobuf_type = 2;
 
   oneof descriptor {
     google.protobuf.ServiceDescriptorProto service = 11;

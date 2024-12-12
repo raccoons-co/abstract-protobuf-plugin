@@ -88,6 +88,7 @@ abstract class ProtocolTypeWalker {
                 .build();
 
         ProtocolType.newBuilder()
+                .setName(service.getFullName())
                 .setProtobufType(type)
                 .setService(service.toProto())
                 .build()
@@ -103,6 +104,7 @@ abstract class ProtocolTypeWalker {
                 .build();
 
         ProtocolType.newBuilder()
+                .setName(enumType.getFullName())
                 .setProtobufType(type)
                 .setEnumType(enumType.toProto())
                 .build()
@@ -117,6 +119,7 @@ abstract class ProtocolTypeWalker {
                 .build();
 
         ProtocolType.newBuilder()
+                .setName(messageType.getFullName())
                 .setProtobufType(type)
                 .setMessageType(messageType.toProto())
                 .build()

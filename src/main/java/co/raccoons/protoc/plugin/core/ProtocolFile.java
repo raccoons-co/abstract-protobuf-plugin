@@ -9,6 +9,9 @@ package co.raccoons.protoc.plugin.core;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FileDescriptor;
 
+/**
+ * Utility class.
+ */
 @Immutable
 public final class ProtocolFile {
 
