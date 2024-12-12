@@ -27,7 +27,8 @@ class CustomOptionRegistryTest {
     @Test
     @DisplayName("is instance of ExtensionRegistry")
     void returnsCorrectType() {
-        assertInstanceOf(ExtensionRegistry.class, CustomOptionRegistry.newRegistry(this::register));
+        var registry = CustomOptionRegistry.newRegistry(this::register);
+        assertInstanceOf(ExtensionRegistry.class, registry);
     }
 
     @Test

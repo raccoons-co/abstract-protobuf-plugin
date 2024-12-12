@@ -46,15 +46,6 @@ class JavaPackageNameTest {
         assertEquals("co.raccoons.example", javaPackageName.value());
     }
 
-/*
-    @Test
-    @DisplayName("if java_package is undefined and package is defined")
-    void hasCorrectJavaPackageName(){
-        var javaPackageName = JavaPackageName.from(UserInfo.getDescriptor());
-        assertEquals("raccoons.protoc", javaPackageName.value());
-    }
-*/
-
     private static Stream<Arguments> messages() {
         return Stream.of(
                 Arguments.of(Nothing.getDescriptor()),

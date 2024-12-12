@@ -7,7 +7,8 @@
 package co.raccoons.protoc.plugin;
 
 import co.raccoons.eventbus.Subscribable;
-import co.raccoons.protoc.plugin.core.ProtobufFileSet;
+import co.raccoons.protoc.plugin.core.ProtocolFile;
+import co.raccoons.protoc.plugin.core.ProtocolFileSet;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
@@ -15,36 +16,29 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
 /**
- * This class provides a skeletal implementation of the Protobuf to Java code
- * generator to minimize the effort required to implement this interface.
- *
- *
- * @see <a href="https://github.com/protocolbuffers/protobuf/blob/main/src/google/protobuf/compiler/plugin.proto">
- * plugin.proto#</a>
+ * A multipart Java code generator.
  */
 public final class CodeGenerator {
 
-    private final ImmutableSet<AbstractCodeGenerator> handlers;
+    private final ImmutableSet<AbstractCodeGenerator> generators;
 
-    private CodeGenerator(ImmutableSet<AbstractCodeGenerator> handlers) {
-        this.handlers = checkNotNull(handlers);
+    private CodeGenerator(ImmutableSet<AbstractCodeGenerator> generators) {
+        this.generators = checkNotNull(generators);
         register();
     }
 
     /**
      * Processes the given compiler request and generates the Protobuf compiler
-     * extra response files.
+     * response files.
      */
     public Collection<File> process(CodeGeneratorRequest request) {
         checkNotNull(request);
-        ProtobufFileSet.of(request.getProtoFileList())
-                .runCollector(request.getFileToGenerateList());
-
+        submitEvents(request);
         return extensions();
     }
 
@@ -55,9 +49,12 @@ public final class CodeGenerator {
         return new Builder();
     }
 
+    /**
+     * A builder of the {@code CodeGenerator} instance.
+     */
     public static final class Builder {
 
-        private final Set<AbstractCodeGenerator> handlers = new HashSet<>();
+        private final Set<AbstractCodeGenerator> generators = new HashSet<>();
 
         private Builder() {
         }
@@ -67,7 +64,7 @@ public final class CodeGenerator {
          */
         public Builder addGenerator(AbstractCodeGenerator generator) {
             checkNotNull(generator);
-            handlers.add(generator);
+            generators.add(generator);
             return this;
         }
 
@@ -75,19 +72,27 @@ public final class CodeGenerator {
          * Returns a new instance of {@code CodeGenerator}.
          */
         public CodeGenerator build() {
-            var immutableSet = ImmutableSet.copyOf(handlers);
-            return new CodeGenerator(immutableSet);
+            var immutableGenerators = ImmutableSet.copyOf(generators);
+            return new CodeGenerator(immutableGenerators);
         }
     }
 
     private void register() {
-        handlers.forEach(Subscribable::register);
+        generators.forEach(Subscribable::register);
     }
 
     private Collection<File> extensions() {
-        return handlers.stream()
+        return generators.stream()
                 .map(AbstractCodeGenerator::extensions)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .collect(toImmutableSet());
+    }
+
+    private static void submitEvents(CodeGeneratorRequest request) {
+        var protocolFileSet= ProtocolFileSet.of(request.getProtoFileList());
+        request.getFileToGenerateList()
+                .stream()
+                .map(protocolFileSet::file)
+                .forEach(ProtocolFile::walk);
     }
 }
