@@ -45,15 +45,15 @@ public enum Identifier {
      */
     outer_class_scope {
         @Override
-        public String forType(ProtocolType protocolType) {
+        public String forType(ProtocolType type) {
             return format("%s", name());
         }
     };
 
     /**
-     * Returns insertion point identifier of the given protocolType.
+     * Returns insertion point identifier of the given type.
      */
-    public String forType(ProtocolType protocolType) {
-        return format("%s:%s", name(), protocolType.getName());
+    public String forType(ProtocolType type) {
+        return format("%s:%s", name(), type.getName());
     }
 }

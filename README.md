@@ -77,14 +77,14 @@ final class ExtraMessageInterface extends AbstractCodeGenerator {
     }
 
     @Override
-    protected File generate(ProtocolType protocolType) {
-        var filename = "<TBD>";
-        var identifier = Identifier.message_implements.forType(protocolType);
-        var content = messageImplementsContent(protocolType);
-        
+    protected File generate(ProtocolType type) {
+        var insertionPoint =
+                InsertionPointFactory.message_implements.newInsertionPoint(type);
+        var content = messageImplementsContent(type);
+
         return File.newBuilder()
-                .setName(fileName)
-                .setInsertionPoint(іdentifier)
+                .setName(insertionPoint.getFileName())
+                .setInsertionPoint(insertionPoint.getIdentifier())
                 .setContent(content)
                 .build();
     }

@@ -53,17 +53,17 @@ final class ExtraMessageInterface extends AbstractCodeGenerator {
                 .build();
     }
 
-    private static boolean hasMessageType(ProtocolType protocolType) {
-        return protocolType.hasMessageType();
+    private static boolean hasMessageType(ProtocolType type) {
+        return type.hasMessageType();
     }
-    private static boolean hasExtraOption(ProtocolType protocolType) {
-        return protocolType.getMessageType()
+    private static boolean hasExtraOption(ProtocolType type) {
+        return type.getMessageType()
                 .getOptions()
                 .hasExtension(OptionsProto.extra);
     }
 
-    private static String messageImplementsContent(ProtocolType protocolType) {
-        var messageImplements = protocolType.getMessageType()
+    private static String messageImplementsContent(ProtocolType type) {
+        var messageImplements = type.getMessageType()
                 .getOptions()
                 .getExtension(OptionsProto.extra)
                 .getMessageImplements();

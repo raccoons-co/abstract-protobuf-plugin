@@ -38,10 +38,10 @@ public abstract class AbstractCodeGenerator implements Subscribable {
      * messages.
      */
     @Subscribe
-    public final void handle(ProtocolType protocolType) {
-        checkNotNull(protocolType);
-        if (precondition().test(protocolType)) {
-            var file = generate(protocolType);
+    public final void handle(ProtocolType type) {
+        checkNotNull(type);
+        if (precondition().test(type)) {
+            var file = generate(type);
             extensions.add(file);
         }
     }
@@ -57,7 +57,7 @@ public abstract class AbstractCodeGenerator implements Subscribable {
      * Generates code generator response file that extends the output produced
      * by another code generator for any protocol message type.
      */
-    protected abstract File generate(ProtocolType protocolType);
+    protected abstract File generate(ProtocolType type);
 
     /**
      * This method is designed to be overridden.

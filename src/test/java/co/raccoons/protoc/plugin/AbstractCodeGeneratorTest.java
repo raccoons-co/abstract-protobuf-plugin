@@ -24,7 +24,7 @@ class AbstractCodeGeneratorTest {
         var generator =
                 new AbstractCodeGenerator() {
                     @Override
-                    protected File generate(ProtocolType protocolType) {
+                    protected File generate(ProtocolType type) {
                         return File.getDefaultInstance();
                     }
                 };
@@ -45,7 +45,7 @@ class AbstractCodeGeneratorTest {
                     }
 
                     @Override
-                    protected File generate(ProtocolType protocolType) {
+                    protected File generate(ProtocolType type) {
                         return File.getDefaultInstance();
                     }
                 };
