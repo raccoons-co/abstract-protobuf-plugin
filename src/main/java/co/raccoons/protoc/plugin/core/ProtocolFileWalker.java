@@ -12,16 +12,16 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A protocol message types tree walker.
+ * A protocol file walker over protocol message types.
  * <p>
  * Walks through the tree of types in the .proto file and posts an event for
  * each found type.
  */
-abstract class ProtocolTypeWalker {
+abstract class ProtocolFileWalker {
 
     private final FileDescriptor protoFile;
 
-    protected ProtocolTypeWalker(FileDescriptor protoFile) {
+    protected ProtocolFileWalker(FileDescriptor protoFile) {
         this.protoFile = checkNotNull(protoFile);
     }
 

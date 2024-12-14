@@ -7,7 +7,6 @@
 package co.raccoons.protoc.plugin.base;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
-import com.google.protobuf.Descriptors.GenericDescriptor;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -36,9 +35,9 @@ public class JavaPackageName {
      * Obtains an instance of {@code JavaPackageName} from given Protocol
      * message type.
      */
-    public static <T extends GenericDescriptor> JavaPackageName from(T descriptor) {
-        checkNotNull(descriptor);
-        var value = javaPackage(descriptor.getFile());
+    public static JavaPackageName from(FileDescriptor protoFile) {
+        checkNotNull(protoFile);
+        var value = javaPackage(protoFile);
         return JavaPackageName.of(value);
     }
 

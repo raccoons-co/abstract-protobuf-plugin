@@ -24,10 +24,16 @@ The request should be used for the further processing by your code generator.
 ### Adding Custom Options
 
 ---
+``` Protobuf
+message Event {
+  option (extra).message_implements = "co.raccoons.common.eventbus.Observable";
+  string name = 1;
+}
+```
 
 To define and use own options for Protocol Buffers the programmer must override 
-method `registerCustomOptions(...)` and  implement corresponding *.proto* files 
-as well.
+method `registerCustomOptions(...)` and  implement corresponding extension 
+protocol types as well [4, 5].
 
 ``` Java
 public static void main(String[] args) {
@@ -39,10 +45,10 @@ public static void main(String[] args) {
 
         @Override
         protected CodeGeneratorResponse response() {
-            var request = request();
             var generator = CodeGenerator.newBuilder()
                     .addGenerator(new ExtraMessageInterface())
                     .build();
+            var request = request();
             var files = generator.process(request);
             return CodeGeneratorResponse.newBuilder()
                     .addAllFile(files)

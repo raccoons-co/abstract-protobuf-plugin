@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package raccoons.protoc;
+
+option java_package = "co.raccoons.example";
+option java_outer_classname = "MoreProto";
+option java_multiple_files = true;
+
+message More {
+  string name = 1;
+}

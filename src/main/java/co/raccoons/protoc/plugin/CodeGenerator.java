@@ -7,8 +7,8 @@
 package co.raccoons.protoc.plugin;
 
 import co.raccoons.common.eventbus.Subscribable;
+import co.raccoons.protoc.plugin.core.FileDescriptorSet;
 import co.raccoons.protoc.plugin.core.ProtocolFile;
-import co.raccoons.protoc.plugin.core.ProtocolFileSet;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
@@ -89,7 +89,7 @@ public final class CodeGenerator {
     }
 
     private static void submitEvents(CodeGeneratorRequest request) {
-        var protocolFileSet= ProtocolFileSet.of(request.getProtoFileList());
+        var protocolFileSet= FileDescriptorSet.of(request.getProtoFileList());
         request.getFileToGenerateList()
                 .stream()
                 .map(protocolFileSet::file)

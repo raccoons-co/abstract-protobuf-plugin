@@ -33,10 +33,10 @@ public final class Plugin {
 
             @Override
             protected CodeGeneratorResponse response() {
-                var request = request();
                 var generator = CodeGenerator.newBuilder()
                         .addGenerator(new ExtraMessageInterface())
                         .build();
+                var request = request();
                 var files = generator.process(request);
                 return CodeGeneratorResponse.newBuilder()
                         .addAllFile(files)

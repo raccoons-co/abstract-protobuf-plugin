@@ -3,15 +3,8 @@ syntax = "proto3";
 package raccoons.protoc;
 
 option java_package = "co.raccoons.example";
-option java_outer_classname = "UserInfoProto";
 option java_multiple_files = true;
 
-import "nothing.proto";
-
 message UserInfo {
-
   string name = 1;
-  string gender = 2;
-  string age = 3;
-  Nothing var = 4;
 }

@@ -13,7 +13,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class JavaClassName {
 
-    public static final String DOT = ".";
+    public static final String DOT_SEPARATOR = ".";
     public static final String EMPTY_STRING = "";
     public static final String DOT_REGEX = "\\.";
     public static final String $_SEPARATOR = "\\$";
@@ -28,7 +28,7 @@ public class JavaClassName {
                                    String javaSimpleName) {
         checkNotNull(javaPackageName);
         checkNotNull(javaSimpleName);
-        var javaFullName = javaPackageName.value() + DOT + javaSimpleName;
+        var javaFullName = javaPackageName.value() + DOT_SEPARATOR + javaSimpleName;
         return new JavaClassName(javaFullName);
     }
 
@@ -36,7 +36,7 @@ public class JavaClassName {
      * Obtains an instance of {@code JavaClassName} from given Protocol message
      * type.
      */
-    public static <T extends GenericDescriptor> JavaClassName from(T descriptor) {
+    public static JavaClassName from(FileDescriptor descriptor) {
         checkNotNull(descriptor);
         var javaPackageName = JavaPackageName.from(descriptor);
         var javaName = withNestedNames(descriptor);
@@ -53,7 +53,7 @@ public class JavaClassName {
     private static <T extends GenericDescriptor> String withNestedNames(T descriptor){
         var protoPackage = protoPackage(descriptor.getFile());
         return descriptor.getFullName()
-                .replace(protoPackage + DOT, EMPTY_STRING)
+                .replace(protoPackage + DOT_SEPARATOR, EMPTY_STRING)
                 .replaceAll(DOT_REGEX, $_SEPARATOR);
     }
 

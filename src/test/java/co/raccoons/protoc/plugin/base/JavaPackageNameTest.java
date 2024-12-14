@@ -9,7 +9,7 @@ package co.raccoons.protoc.plugin.base;
 import co.raccoons.example.Nothing;
 import co.raccoons.example.NothingOuterClass;
 import co.raccoons.example.TopLevelEnum;
-import com.google.protobuf.Descriptors.GenericDescriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,21 +41,21 @@ class JavaPackageNameTest {
     @ParameterizedTest
     @MethodSource("messages")
     @DisplayName("if java_package is defined")
-    <T extends GenericDescriptor> void hasCorrectJavaPackageName(T descriptor) {
-        var javaPackageName = JavaPackageName.from(descriptor);
+    void hasCorrectJavaPackageName(FileDescriptor protoFile) {
+        var javaPackageName = JavaPackageName.from(protoFile);
         assertEquals("co.raccoons.example", javaPackageName.value());
     }
 
     private static Stream<Arguments> messages() {
         return Stream.of(
-                Arguments.of(Nothing.getDescriptor()),
-                Arguments.of(Nothing.Else.getDescriptor()),
-                Arguments.of(Nothing.Else.Matters.getDescriptor()),
-                Arguments.of(TopLevelEnum.getDescriptor()),
-                Arguments.of(Nothing.NothingEnum.getDescriptor()),
-                Arguments.of(Nothing.Else.ElseEnum.getDescriptor()),
-                Arguments.of(Nothing.Else.Matters.MattersEnum.getDescriptor()),
-                Arguments.of(NothingOuterClass.getDescriptor())
+                Arguments.of(Nothing.getDescriptor().getFile()),
+                Arguments.of(Nothing.Else.getDescriptor().getFile()),
+                Arguments.of(Nothing.Else.Matters.getDescriptor().getFile()),
+                Arguments.of(TopLevelEnum.getDescriptor().getFile()),
+                Arguments.of(Nothing.NothingEnum.getDescriptor().getFile()),
+                Arguments.of(Nothing.Else.ElseEnum.getDescriptor().getFile()),
+                Arguments.of(Nothing.Else.Matters.MattersEnum.getDescriptor().getFile()),
+                Arguments.of(NothingOuterClass.getDescriptor().getFile())
         );
     }
 }

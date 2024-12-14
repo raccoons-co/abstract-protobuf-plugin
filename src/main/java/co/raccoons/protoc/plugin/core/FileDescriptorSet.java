@@ -21,11 +21,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * A set of Proto files of with their dependencies.
  */
 @Immutable
-public final class ProtocolFileSet {
+public final class FileDescriptorSet {
 
     private final ImmutableMap<String, FileDescriptor> files;
 
-    private ProtocolFileSet(ImmutableMap<String, FileDescriptor> files) {
+    private FileDescriptorSet(ImmutableMap<String, FileDescriptor> files) {
         this.files = checkNotNull(files);
     }
 
@@ -33,10 +33,10 @@ public final class ProtocolFileSet {
      * Returns a new instance of {@code ProtobufFileSet} for the given proto
      * file list.
      */
-    public static ProtocolFileSet of(Iterable<FileDescriptorProto> protos) {
+    public static FileDescriptorSet of(Iterable<FileDescriptorProto> protos) {
         checkNotNull(protos);
         var files = files(protos);
-        return new ProtocolFileSet(files);
+        return new FileDescriptorSet(files);
     }
 
     /**
