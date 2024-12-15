@@ -93,6 +93,8 @@ public final class CodeGenerator {
         request.getFileToGenerateList()
                 .stream()
                 .map(protocolFileSet::file)
-                .forEach(ProtocolFile::walk);
+                .map(ProtocolFile::of)
+                .forEach(ProtocolFile::submitEvents);
+//                .forEach(ProtocolFile::walk);
     }
 }
