@@ -1,5 +1,5 @@
 [![GitHub Actions](https://github.com/raccoons-co/abstract-protobuf-plugin/actions/workflows/maven.yml/badge.svg)](https://github.com/raccoons-co/jru-telegrambot/actions)
-[![codecov](https://codecov.io/gh/raccoons-co/abstract-protobuf-plugin/branch/master/graph/badge.svg?token=y9xaNeJ4Lz)](https://codecov.io/gh/raccoons-co/abstract-protobuf-plugin)
+[![codecov](https://codecov.io/gh/raccoons-co/abstract-protobuf-plugin/graph/badge.svg?token=y9xaNeJ4Lz)](https://codecov.io/gh/raccoons-co/abstract-protobuf-plugin)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=raccoons-co_abstract-protobuf-plugin&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=raccoons-co_abstract-protobuf-plugin)
 
 # Developing Protobuf Compiler Plugin in Java
@@ -64,21 +64,7 @@ The multipart Java `CodeGenerator` processes the given compiler request and
 generates the Protobuf compiler response files using concrete generators that 
 was added to it.
 
-``` Java
-var generator = CodeGenerator.newBuilder()
-        .add(new ExtraMessageInterface())
-        .build();
-var files = generator.process(request);
-```
-
 These concrete generators are implementations of the `AbstractCodeGenerator`.
-
-### Insertion Point Factory
-___
-
-``` Java
-
-```
 
 ### Abstract Code Generator
 ___
@@ -97,6 +83,14 @@ implement the method `generate(...)` which returns an instance of
 To limit the scope of protocol message types to which concrete generator will
 be applied, the programmer should to override `precondition()` method to return
 required predicates.
+
+### Insertion Point Factory
+___
+
+While composing the Java code extension it is important to know where to insert
+your extra code. For this purpose the programmer can use `InsertionPointFactory`
+class. It creates the insertion point details for the specified scope of a given 
+protocol message type: *file name* and *identifier*.
 
 ``` Java
 final class ExtraMessageInterface extends AbstractCodeGenerator {
