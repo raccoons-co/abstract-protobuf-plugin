@@ -20,6 +20,9 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
+/**
+ * A set of the protocol message types.
+ */
 @Immutable
 final class ProtocolTypeSet {
 
@@ -33,53 +36,33 @@ final class ProtocolTypeSet {
         this.rawMessageTypes = ImmutableSet.copyOf(builder.rawMessageTypes);
     }
 
+    /**
+     * Returns a new builder of the {@code ProtocolTypeSet} instance.
+     */
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    /**
+     * Returns {@code true} if set contains a given type name, otherwise
+     * {@code false}.
+     */
     public boolean contains(String typeName) {
         return allRawTypeNames().contains(typeName);
     }
 
-    public ImmutableSet<ProtocolType> values(JavaProtoName javaProtoName) {
-        var protocolTypeMapper = new ProtocolTypeMapper(javaProtoName);
+    /**
+     * Obtains the values of set.
+     *
+     * The values are mapped to the java proto names file
+     */
+    public ImmutableSet<ProtocolType> values(JavaName javaName) {
+        var protocolTypeMapper = new ProtocolTypeMapper(javaName);
         return ImmutableSet.<ProtocolType>builder()
                 .addAll(services(protocolTypeMapper))
                 .addAll(enumTypes(protocolTypeMapper))
                 .addAll(messageTypes(protocolTypeMapper))
                 .build();
-    }
-
-    public static Builder newBuilder() {
-        return new Builder();
-    }
-
-    public static final class Builder {
-
-        private final Set<ServiceDescriptor> rawServices = new HashSet<>();
-        private final Set<EnumDescriptor> rawEnumTypes = new HashSet<>();
-        private final Set<Descriptor> rawMessageTypes = new HashSet<>();
-
-        private Builder() {
-        }
-
-        public Builder add(ServiceDescriptor service) {
-            checkNotNull(service);
-            rawServices.add(service);
-            return this;
-        }
-
-        public Builder add(EnumDescriptor enumType) {
-            checkNotNull(enumType);
-            rawEnumTypes.add(enumType);
-            return this;
-        }
-
-        public Builder add(Descriptor messageType) {
-            checkNotNull(messageType);
-            rawMessageTypes.add(messageType);
-            return this;
-        }
-
-        public ProtocolTypeSet build() {
-            return new ProtocolTypeSet(this);
-        }
     }
 
     private ImmutableSet<String> allRawTypeNames() {
@@ -115,12 +98,44 @@ final class ProtocolTypeSet {
                 .collect(toImmutableSet());
     }
 
+    public static final class Builder {
+
+        private final Set<ServiceDescriptor> rawServices = new HashSet<>();
+        private final Set<EnumDescriptor> rawEnumTypes = new HashSet<>();
+        private final Set<Descriptor> rawMessageTypes = new HashSet<>();
+
+        private Builder() {
+        }
+
+        public Builder add(ServiceDescriptor service) {
+            checkNotNull(service);
+            rawServices.add(service);
+            return this;
+        }
+
+        public Builder add(EnumDescriptor enumType) {
+            checkNotNull(enumType);
+            rawEnumTypes.add(enumType);
+            return this;
+        }
+
+        public Builder add(Descriptor messageType) {
+            checkNotNull(messageType);
+            rawMessageTypes.add(messageType);
+            return this;
+        }
+
+        public ProtocolTypeSet build() {
+            return new ProtocolTypeSet(this);
+        }
+    }
+
     private static final class ProtocolTypeMapper {
 
-        private final JavaProtoName javaProtoName;
+        private final JavaName javaName;
 
-        public ProtocolTypeMapper(JavaProtoName javaProtoName) {
-            this.javaProtoName = checkNotNull(javaProtoName);
+        public ProtocolTypeMapper(JavaName javaName) {
+            this.javaName = checkNotNull(javaName);
         }
 
         private ProtocolType service(ServiceDescriptor service) {
@@ -131,23 +146,28 @@ final class ProtocolTypeSet {
         }
 
         private ProtocolType enumType(EnumDescriptor enumType) {
+            var javaFileName = ProtocolType.JavaFileName.newBuilder()
+                    .setName(javaName.enumFileName(enumType))
+                    .build();
+
             return ProtocolType.newBuilder()
                     .setName(enumType.getFullName())
                     .setEnumType(enumType.toProto())
+                    .setJavaFileName(javaFileName)
                     .build();
         }
 
         private ProtocolType messageType(Descriptor messageType) {
-            var fileName = ProtocolType.FileName.newBuilder()
-                    .setName(javaProtoName.messageFileName(messageType))
-                    .setMessageOrBuilderName(javaProtoName.orBuilderFileName(messageType))
-                    .setOuterClassName(javaProtoName.outerClassFileName())
+            var javaFileName = ProtocolType.JavaFileName.newBuilder()
+                    .setName(javaName.messageFileName(messageType))
+                    .setOrBuilderName(javaName.orBuilderFileName(messageType))
+                    .setOuterClassName(javaName.outerClassFileName())
                     .build();
 
             return ProtocolType.newBuilder()
                     .setName(messageType.getFullName())
                     .setMessageType(messageType.toProto())
-                    .setJavaFileName(fileName)
+                    .setJavaFileName(javaFileName)
                     .build();
         }
     }

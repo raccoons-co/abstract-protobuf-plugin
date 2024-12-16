@@ -47,7 +47,7 @@ public enum InsertionPointFactory {
     interface_extends {
         @Override
         protected String javaFileName(ProtocolType type) {
-            return type.getJavaFileName().getMessageOrBuilderName();
+            return type.getJavaFileName().getOrBuilderName();
         }
     },
 

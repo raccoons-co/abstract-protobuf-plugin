@@ -18,7 +18,7 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 @Immutable
-public final class ProtocolFile implements JavaProtoName {
+public final class ProtocolFile implements JavaName {
 
     private final FileDescriptor file;
     private final ProtocolTypeSet types;
@@ -28,8 +28,11 @@ public final class ProtocolFile implements JavaProtoName {
         this.types = checkNotNull(types);
     }
 
+    /**
+     * Returns a new instance of the {@code ProtocolFile}.
+     */
     public static ProtocolFile of(FileDescriptor file) {
-        var types = new Parser().walk(file);
+        var types = new ProtoParser().walk(file);
         return new ProtocolFile(file, types);
     }
 
@@ -43,11 +46,15 @@ public final class ProtocolFile implements JavaProtoName {
         return types;
     }
 
+    /**
+     * Posts an event for each protocol message type in this file for
+     * the further processing by code generators.
+     */
     public void submitEvents() {
         types.values(this).forEach(Observable::post);
     }
 
-    private static final class Parser {
+    private static final class ProtoParser {
 
         private final ProtocolTypeSet.Builder builder = ProtocolTypeSet.newBuilder();
 

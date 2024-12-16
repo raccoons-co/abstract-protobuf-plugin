@@ -10,8 +10,10 @@ import co.raccoons.example.Another;
 import co.raccoons.example.MultipleFalseProto;
 import co.raccoons.example.MultipleTrue;
 import co.raccoons.example.Nothing;
+import co.raccoons.example.TopLevelEnum;
 import co.raccoons.example.UserInfo;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.EnumDescriptor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,14 +38,14 @@ class ProtocolFileTest {
             "_nothing_else_.proto"
     })
     void convertsSnakeToPascalCase(String sample) {
-        assertEquals("NothingElse", JavaProtoName.SimpleName.fromProtoName(sample));
+        assertEquals("NothingElse", JavaName.SimpleName.fromProtoName(sample));
     }
 
     @Test
     @DisplayName("converts file name to Pascal case")
     void convertsSnakeToPascalCase() {
         var sample = "evenTs__aS.proto";
-        assertEquals("EvenTsAS", JavaProtoName.SimpleName.fromProtoName(sample));
+        assertEquals("EvenTsAS", JavaName.SimpleName.fromProtoName(sample));
     }
 
     @ParameterizedTest
@@ -68,6 +70,14 @@ class ProtocolFileTest {
     void messageFileName(String expected, Descriptor messageType) {
         var protocolFile = ProtocolFile.of(messageType.getFile());
         assertEquals(expected, protocolFile.messageFileName(messageType));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    @DisplayName("generates `enum` file name")
+    void enumFileName(String expected, EnumDescriptor enumType) {
+        var protocolFile = ProtocolFile.of(enumType.getFile());
+        assertEquals(expected, protocolFile.enumFileName(enumType));
     }
 
     private static Stream<Arguments> outerClassFileName() {
@@ -103,4 +113,14 @@ class ProtocolFileTest {
                 Arguments.of("raccoons/example/NoJavaPackage.java", NoJavaPackage.getDescriptor())
         );
     }
+
+    private static Stream<Arguments> enumFileName() {
+        return Stream.of(
+                Arguments.of("co/raccoons/example/TopLevelEnum.java", TopLevelEnum.getDescriptor()),
+                Arguments.of("co/raccoons/example/Nothing.java", Nothing.NothingEnum.getDescriptor()),
+                Arguments.of("co/raccoons/example/Nothing.java", Nothing.Else.ElseEnum.getDescriptor()),
+                Arguments.of("co/raccoons/example/Nothing.java", Nothing.Else.Matters.MattersEnum.getDescriptor())
+        );
+    }
+
 }

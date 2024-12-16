@@ -27,8 +27,8 @@ public final class CodeGenerator {
 
     private final ImmutableSet<AbstractCodeGenerator> generators;
 
-    private CodeGenerator(ImmutableSet<AbstractCodeGenerator> generators) {
-        this.generators = checkNotNull(generators);
+    private CodeGenerator(Builder builder) {
+        this.generators = ImmutableSet.copyOf(builder.generators);
         register();
     }
 
@@ -72,8 +72,7 @@ public final class CodeGenerator {
          * Returns a new instance of {@code CodeGenerator}.
          */
         public CodeGenerator build() {
-            var immutableGenerators = ImmutableSet.copyOf(generators);
-            return new CodeGenerator(immutableGenerators);
+            return new CodeGenerator(this);
         }
     }
 
