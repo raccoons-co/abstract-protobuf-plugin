@@ -40,11 +40,11 @@ public final class FileDescriptorSet {
     }
 
     /**
-     * Obtains proto file descripto for the given file name.
+     * Obtains proto file descriptor for the given file name.
      */
-    public FileDescriptor file(String fileName){
-        checkNotNull(fileName);
-        return files.get(fileName);
+    public FileDescriptor fileByName(String name){
+        checkNotNull(name);
+        return files.get(name);
     }
 
     private static ImmutableMap<String, FileDescriptor> files(Iterable<FileDescriptorProto> protos) {
@@ -57,8 +57,9 @@ public final class FileDescriptorSet {
                             .toArray(FileDescriptor[]::new);
 
             try {
-                var fd = FileDescriptor.buildFrom(fileDescriptorProto, dependencies);
-                files.put(fileDescriptorProto.getName(), fd);
+                var fileDescriptor =
+                        FileDescriptor.buildFrom(fileDescriptorProto, dependencies);
+                files.put(fileDescriptorProto.getName(), fileDescriptor);
             } catch (DescriptorValidationException e) {
                 throw new IllegalStateException("DescriptorProto is not valid.", e);
             }

@@ -62,7 +62,7 @@ public final class CodeGenerator {
         /**
          * Adds code generator.
          */
-        public Builder addGenerator(AbstractCodeGenerator generator) {
+        public Builder add(AbstractCodeGenerator generator) {
             checkNotNull(generator);
             generators.add(generator);
             return this;
@@ -89,12 +89,11 @@ public final class CodeGenerator {
     }
 
     private static void submitEvents(CodeGeneratorRequest request) {
-        var protocolFileSet= FileDescriptorSet.of(request.getProtoFileList());
+        var fileDescriptorSet= FileDescriptorSet.of(request.getProtoFileList());
         request.getFileToGenerateList()
                 .stream()
-                .map(protocolFileSet::file)
+                .map(fileDescriptorSet::fileByName)
                 .map(ProtocolFile::of)
                 .forEach(ProtocolFile::submitEvents);
-//                .forEach(ProtocolFile::walk);
     }
 }

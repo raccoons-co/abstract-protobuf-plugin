@@ -21,52 +21,20 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
 @Immutable
-public final class ProtocolTypeSet {
+final class ProtocolTypeSet {
 
     private final ImmutableSet<ServiceDescriptor> rawServices;
     private final ImmutableSet<EnumDescriptor> rawEnumTypes;
     private final ImmutableSet<Descriptor> rawMessageTypes;
 
     private ProtocolTypeSet(Builder builder) {
-        this.rawServices = ImmutableSet.copyOf(builder.services);
-        this.rawEnumTypes = ImmutableSet.copyOf(builder.enumTypes);
-        this.rawMessageTypes = ImmutableSet.copyOf(builder.messageTypes);
+        this.rawServices = ImmutableSet.copyOf(builder.rawServices);
+        this.rawEnumTypes = ImmutableSet.copyOf(builder.rawEnumTypes);
+        this.rawMessageTypes = ImmutableSet.copyOf(builder.rawMessageTypes);
     }
 
-    public static Builder newBuilder() {
-        return new Builder();
-    }
-
-    public static final class Builder {
-
-        private final Set<ServiceDescriptor> services = new HashSet<>();
-        private final Set<EnumDescriptor> enumTypes = new HashSet<>();
-        private final Set<Descriptor> messageTypes = new HashSet<>();
-
-        private Builder() {
-        }
-
-        public Builder add(ServiceDescriptor service) {
-            checkNotNull(service);
-            services.add(service);
-            return this;
-        }
-
-        public Builder add(EnumDescriptor enumType) {
-            checkNotNull(enumType);
-            enumTypes.add(enumType);
-            return this;
-        }
-
-        public Builder add(Descriptor messageType) {
-            checkNotNull(messageType);
-            messageTypes.add(messageType);
-            return this;
-        }
-
-        public ProtocolTypeSet build() {
-            return new ProtocolTypeSet(this);
-        }
+    public boolean contains(String typeName) {
+        return allRawTypeNames().contains(typeName);
     }
 
     public ImmutableSet<ProtocolType> values(JavaProtoName javaProtoName) {
@@ -75,6 +43,57 @@ public final class ProtocolTypeSet {
                 .addAll(services(protocolTypeMapper))
                 .addAll(enumTypes(protocolTypeMapper))
                 .addAll(messageTypes(protocolTypeMapper))
+                .build();
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+
+        private final Set<ServiceDescriptor> rawServices = new HashSet<>();
+        private final Set<EnumDescriptor> rawEnumTypes = new HashSet<>();
+        private final Set<Descriptor> rawMessageTypes = new HashSet<>();
+
+        private Builder() {
+        }
+
+        public Builder add(ServiceDescriptor service) {
+            checkNotNull(service);
+            rawServices.add(service);
+            return this;
+        }
+
+        public Builder add(EnumDescriptor enumType) {
+            checkNotNull(enumType);
+            rawEnumTypes.add(enumType);
+            return this;
+        }
+
+        public Builder add(Descriptor messageType) {
+            checkNotNull(messageType);
+            rawMessageTypes.add(messageType);
+            return this;
+        }
+
+        public ProtocolTypeSet build() {
+            return new ProtocolTypeSet(this);
+        }
+    }
+
+    private ImmutableSet<String> allRawTypeNames() {
+        return allRawTypes()
+                .stream()
+                .map(GenericDescriptor::getName)
+                .collect(toImmutableSet());
+    }
+
+    private ImmutableSet<GenericDescriptor> allRawTypes() {
+        return ImmutableSet.<GenericDescriptor>builder()
+                .addAll(rawServices)
+                .addAll(rawEnumTypes)
+                .addAll(rawMessageTypes)
                 .build();
     }
 
@@ -93,25 +112,6 @@ public final class ProtocolTypeSet {
     private ImmutableSet<ProtocolType> messageTypes(ProtocolTypeMapper mapper) {
         return rawMessageTypes.stream()
                 .map(mapper::messageType)
-                .collect(toImmutableSet());
-    }
-
-    public boolean contains(String typeName) {
-        return allTypeNames().contains(typeName);
-    }
-
-    private ImmutableSet<GenericDescriptor> allTypes() {
-        return ImmutableSet.<GenericDescriptor>builder()
-                .addAll(rawServices)
-                .addAll(rawEnumTypes)
-                .addAll(rawMessageTypes)
-                .build();
-    }
-
-    private ImmutableSet<String> allTypeNames() {
-        return allTypes()
-                .stream()
-                .map(GenericDescriptor::getName)
                 .collect(toImmutableSet());
     }
 

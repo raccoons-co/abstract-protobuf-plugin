@@ -34,7 +34,7 @@ public final class Plugin {
             @Override
             protected CodeGeneratorResponse response() {
                 var generator = CodeGenerator.newBuilder()
-                        .addGenerator(new ExtraMessageInterface())
+                        .add(new ExtraMessageInterface())
                         .build();
                 var request = request();
                 var files = generator.process(request);

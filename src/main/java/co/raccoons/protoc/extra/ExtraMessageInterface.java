@@ -45,21 +45,11 @@ final class ExtraMessageInterface extends AbstractCodeGenerator {
         var insertionPoint =
                 InsertionPointFactory.message_implements.newInsertionPoint(type);
         var content = messageImplementsContent(type);
-
         return File.newBuilder()
                 .setName(insertionPoint.getFileName())
                 .setInsertionPoint(insertionPoint.getIdentifier())
                 .setContent(content)
                 .build();
-    }
-
-    private static boolean hasMessageType(ProtocolType type) {
-        return type.hasMessageType();
-    }
-    private static boolean hasExtraOption(ProtocolType type) {
-        return type.getMessageType()
-                .getOptions()
-                .hasExtension(OptionsProto.extra);
     }
 
     private static String messageImplementsContent(ProtocolType type) {
@@ -69,5 +59,15 @@ final class ExtraMessageInterface extends AbstractCodeGenerator {
                 .getMessageImplements();
         checkArgument(!isNullOrEmpty(messageImplements));
         return format("%s,", messageImplements);
+    }
+
+    private static boolean hasMessageType(ProtocolType type) {
+        return type.hasMessageType();
+    }
+
+    private static boolean hasExtraOption(ProtocolType type) {
+        return type.getMessageType()
+                .getOptions()
+                .hasExtension(OptionsProto.extra);
     }
 }

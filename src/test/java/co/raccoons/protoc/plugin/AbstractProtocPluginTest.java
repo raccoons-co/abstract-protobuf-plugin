@@ -63,7 +63,7 @@ class AbstractProtocPluginTest {
                                 new AbstractProtocPlugin() {
                                     @Override
                                     protected CodeGeneratorResponse response() {
-                                        request();
+                                        var unused = request();
                                         return null;
                                     }
                                 }.integrate()
