@@ -6,9 +6,9 @@
 
 package co.raccoons.protoc.plugin;
 
-import co.raccoons.eventbus.Subscribable;
+import co.raccoons.common.eventbus.Subscribable;
+import co.raccoons.protoc.plugin.core.FileDescriptorSet;
 import co.raccoons.protoc.plugin.core.ProtocolFile;
-import co.raccoons.protoc.plugin.core.ProtocolFileSet;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
@@ -27,8 +27,8 @@ public final class CodeGenerator {
 
     private final ImmutableSet<AbstractCodeGenerator> generators;
 
-    private CodeGenerator(ImmutableSet<AbstractCodeGenerator> generators) {
-        this.generators = checkNotNull(generators);
+    private CodeGenerator(Builder builder) {
+        this.generators = ImmutableSet.copyOf(builder.generators);
         register();
     }
 
@@ -62,7 +62,7 @@ public final class CodeGenerator {
         /**
          * Adds code generator.
          */
-        public Builder addGenerator(AbstractCodeGenerator generator) {
+        public Builder add(AbstractCodeGenerator generator) {
             checkNotNull(generator);
             generators.add(generator);
             return this;
@@ -72,8 +72,7 @@ public final class CodeGenerator {
          * Returns a new instance of {@code CodeGenerator}.
          */
         public CodeGenerator build() {
-            var immutableGenerators = ImmutableSet.copyOf(generators);
-            return new CodeGenerator(immutableGenerators);
+            return new CodeGenerator(this);
         }
     }
 
@@ -89,10 +88,11 @@ public final class CodeGenerator {
     }
 
     private static void submitEvents(CodeGeneratorRequest request) {
-        var protocolFileSet= ProtocolFileSet.of(request.getProtoFileList());
+        var fileDescriptorSet= FileDescriptorSet.of(request.getProtoFileList());
         request.getFileToGenerateList()
                 .stream()
-                .map(protocolFileSet::file)
-                .forEach(ProtocolFile::walk);
+                .map(fileDescriptorSet::fileByName)
+                .map(ProtocolFile::of)
+                .forEach(ProtocolFile::submitEvents);
     }
 }

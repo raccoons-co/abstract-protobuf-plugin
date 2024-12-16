@@ -1,12 +1,11 @@
 [![GitHub Actions](https://github.com/raccoons-co/abstract-protobuf-plugin/actions/workflows/maven.yml/badge.svg)](https://github.com/raccoons-co/jru-telegrambot/actions)
-[![Codecov](https://codecov.io/gh/raccoons-co/abstract-protobuf-plugin/graph/badge.svg?token=y9xaNeJ4Lz)](https://codecov.io/gh/raccoons-co/abstract-protobuf-plugin)
+[![codecov](https://codecov.io/gh/raccoons-co/abstract-protobuf-plugin/branch/master/graph/badge.svg?token=y9xaNeJ4Lz)](https://codecov.io/gh/raccoons-co/abstract-protobuf-plugin)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=raccoons-co_abstract-protobuf-plugin&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=raccoons-co_abstract-protobuf-plugin)
 
 # Developing Protobuf Compiler Plugin in Java
 
 ### Abstract Protoc Plugin
-
----
+___
 
 Let's simplify creation of Protobuf Compiler Plugin with using the
 `AbstractProtocPlugin`. This class has skeletal implementation to handle
@@ -22,12 +21,18 @@ The protected method `request()` returns the instance of the
 The request should be used for the further processing by your code generator.
 
 ### Adding Custom Options
+___
 
----
+``` Protobuf
+message Event {
+  option (extra).message_implements = "co.raccoons.common.eventbus.Observable";
+  string name = 1;
+}
+```
 
 To define and use own options for Protocol Buffers the programmer must override 
-method `registerCustomOptions(...)` and  implement corresponding *.proto* files 
-as well.
+method `registerCustomOptions(...)` and  implement corresponding extension 
+protocol types as well [4, 5].
 
 ``` Java
 public static void main(String[] args) {
@@ -39,10 +44,10 @@ public static void main(String[] args) {
 
         @Override
         protected CodeGeneratorResponse response() {
-            var request = request();
             var generator = CodeGenerator.newBuilder()
-                    .addGenerator(new ExtraMessageInterface())
+                    .add(new ExtraMessageInterface())
                     .build();
+            var request = request();
             var files = generator.process(request);
             return CodeGeneratorResponse.newBuilder()
                     .addAllFile(files)
@@ -51,12 +56,35 @@ public static void main(String[] args) {
     }.integrate();
 }
 ```
- 
-### Abstract Code Generator
 
----
-There is another abstraction that can be used as a part of a further plugin 
-development.
+### Multipart Code Generator
+___
+
+The multipart Java `CodeGenerator` processes the given compiler request and 
+generates the Protobuf compiler response files using concrete generators that 
+was added to it.
+
+``` Java
+var generator = CodeGenerator.newBuilder()
+        .add(new ExtraMessageInterface())
+        .build();
+var files = generator.process(request);
+```
+
+These concrete generators are implementations of the `AbstractCodeGenerator`.
+
+### Insertion Point Factory
+___
+
+``` Java
+
+```
+
+### Abstract Code Generator
+___
+
+There is another abstraction `AbstractCodeGenerator` that can be used as a part 
+of a further plugin development.
 
 The skeletal implementation of `AbstractCodeGenerator` handles processing of
 generating Java code extensions for any protocol message types.
@@ -65,6 +93,10 @@ To introduce a concrete generator that extends the output produced by another
 code generator, the programmer must extend `AbstractCodeGenerator`class and 
 implement the method `generate(...)` which returns an instance of
 `CodeGeneratorResponse.File`.
+
+To limit the scope of protocol message types to which concrete generator will
+be applied, the programmer should to override `precondition()` method to return
+required predicates.
 
 ``` Java
 final class ExtraMessageInterface extends AbstractCodeGenerator {
@@ -77,14 +109,13 @@ final class ExtraMessageInterface extends AbstractCodeGenerator {
     }
 
     @Override
-    protected File generate(ProtocolType protocolType) {
-        var filename = "<TBD>";
-        var identifier = Identifier.message_implements.forType(protocolType);
-        var content = messageImplementsContent(protocolType);
-        
+    protected File generate(ProtocolType type) {
+        var insertionPoint =
+                InsertionPointFactory.message_implements.newInsertionPoint(type);
+        var content = messageImplementsContent(type);
         return File.newBuilder()
-                .setName(fileName)
-                .setInsertionPoint(іdentifier)
+                .setName(insertionPoint.getFileName())
+                .setInsertionPoint(insertionPoint.getIdentifier())
                 .setContent(content)
                 .build();
     }
