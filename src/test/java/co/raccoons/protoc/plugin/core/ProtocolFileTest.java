@@ -7,7 +7,6 @@
 package co.raccoons.protoc.plugin.core;
 
 import co.raccoons.example.Another;
-import co.raccoons.example.More;
 import co.raccoons.example.MultipleFalseProto;
 import co.raccoons.example.MultipleTrue;
 import co.raccoons.example.Nothing;
@@ -19,6 +18,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import raccoons.example.NoJavaPackage;
 
 import java.util.stream.Stream;
 
@@ -72,23 +72,23 @@ class ProtocolFileTest {
 
     private static Stream<Arguments> outerClassFileName() {
         return Stream.of(
-                Arguments.of("co/raccoons/example/MoreProto.java", More.getDescriptor()),
                 Arguments.of("co/raccoons/example/NothingOuterClass.java", Nothing.getDescriptor()),
                 Arguments.of("co/raccoons/example/UserInfoSample.java", UserInfo.getDescriptor()),
                 Arguments.of("co/raccoons/example/MultipleTrueOuterClass.java", MultipleTrue.getDescriptor()),
-                Arguments.of("co/raccoons/example/MultipleFalseProto.java", MultipleFalseProto.MultipleFalse.getDescriptor())
+                Arguments.of("co/raccoons/example/MultipleFalseProto.java", MultipleFalseProto.MultipleFalse.getDescriptor()),
+                Arguments.of("raccoons/example/NoJavaPackageProto.java", NoJavaPackage.getDescriptor())
         );
     }
 
     private static Stream<Arguments> orBuilderFileName() {
         return Stream.of(
                 Arguments.of("co/raccoons/example/UserInfoOrBuilder.java", UserInfo.getDescriptor()),
-                Arguments.of("co/raccoons/example/MoreOrBuilder.java", More.getDescriptor()),
                 Arguments.of("co/raccoons/example/NothingOrBuilder.java", Nothing.getDescriptor()),
                 Arguments.of("co/raccoons/example/Nothing.java", Nothing.Else.getDescriptor()),
                 Arguments.of("co/raccoons/example/Nothing.java", Nothing.Else.Matters.getDescriptor()),
                 Arguments.of("co/raccoons/example/MultipleTrueOrBuilder.java", MultipleTrue.getDescriptor()),
-                Arguments.of("co/raccoons/example/MultipleFalseProto.java", MultipleFalseProto.MultipleFalse.getDescriptor())
+                Arguments.of("co/raccoons/example/MultipleFalseProto.java", MultipleFalseProto.MultipleFalse.getDescriptor()),
+                Arguments.of("raccoons/example/NoJavaPackageOrBuilder.java", NoJavaPackage.getDescriptor())
         );
     }
 
@@ -99,7 +99,8 @@ class ProtocolFileTest {
                 Arguments.of("co/raccoons/example/Nothing.java", Nothing.Else.Matters.getDescriptor()),
                 Arguments.of("co/raccoons/example/Another.java", Another.getDescriptor()),
                 Arguments.of("co/raccoons/example/MultipleTrue.java", MultipleTrue.getDescriptor()),
-                Arguments.of("co/raccoons/example/MultipleFalseProto.java", MultipleFalseProto.MultipleFalse.getDescriptor())
+                Arguments.of("co/raccoons/example/MultipleFalseProto.java", MultipleFalseProto.MultipleFalse.getDescriptor()),
+                Arguments.of("raccoons/example/NoJavaPackage.java", NoJavaPackage.getDescriptor())
         );
     }
 }

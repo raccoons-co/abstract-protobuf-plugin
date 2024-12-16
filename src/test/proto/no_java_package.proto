@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package raccoons.example;
 
-option java_package = "co.raccoons.example";
+option java_outer_classname = "NoJavaPackageProto";
 option java_multiple_files = true;
 
-message MultipleTrue {
+message NoJavaPackage {
   string name = 1;
 }
