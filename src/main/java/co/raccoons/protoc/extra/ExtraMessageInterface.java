@@ -14,8 +14,6 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
 import java.util.function.Predicate;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.lang.String.format;
 
 /**
@@ -53,12 +51,20 @@ final class ExtraMessageInterface extends AbstractCodeGenerator {
     }
 
     private static String messageImplementsContent(ProtocolType type) {
-        var messageImplements = type.getMessageType()
+        var className = type.getMessageType()
                 .getOptions()
                 .getExtension(OptionsProto.extra)
                 .getMessageImplements();
-        checkArgument(!isNullOrEmpty(messageImplements));
-        return format("%s,", messageImplements);
+        checkClass(className);
+        return format("%s,", className);
+    }
+
+    private static void checkClass(String className) {
+        try {
+            Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("Option `(extra)` content should be a class name.", e);
+        }
     }
 
     private static boolean hasMessageType(ProtocolType type) {
