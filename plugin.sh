@@ -1,3 +1,3 @@
 #!/bin/sh
 
-java -jar ./tools/ProtocPlugin-0.0.4-jar-with-dependencies.jar
+java -jar ./tools/ProtocPlugin-0.0.5-jar-with-dependencies.jar
