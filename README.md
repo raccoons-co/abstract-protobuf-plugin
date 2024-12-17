@@ -61,10 +61,9 @@ public static void main(String[] args) {
 ___
 
 The multipart Java `CodeGenerator` processes the given compiler request and 
-generates the Protobuf compiler response files using concrete generators that 
-was added to it.
-
-These concrete generators are implementations of the `AbstractCodeGenerator`.
+generates the Protobuf compiler response files using a concrete generators that 
+was added to it. These concrete generators are implementations of 
+the `AbstractCodeGenerator`.
 
 ### Abstract Code Generator
 ___
@@ -73,14 +72,14 @@ There is another abstraction `AbstractCodeGenerator` that can be used as a part
 of a further plugin development.
 
 The skeletal implementation of `AbstractCodeGenerator` handles processing of
-generating Java code extensions for any protocol message types.
+generating Java code extensions for any protocol buffer message types.
 
 To introduce a concrete generator that extends the output produced by another 
 code generator, the programmer must extend `AbstractCodeGenerator`class and 
 implement the method `generate(...)` which returns an instance of
 `CodeGeneratorResponse.File`.
 
-To limit the scope of protocol message types to which concrete generator will
+To limit the scope of protocol buffer message types to which concrete generator will
 be applied, the programmer should to override `precondition()` method to return
 required predicates.
 
@@ -89,8 +88,8 @@ ___
 
 While composing the Java code extension it is important to know where to insert
 your extra code. For this purpose the programmer can use `InsertionPointFactory`
-class. It creates the insertion point details for the specified scope of a given 
-protocol message type: *file name* and *identifier*.
+class which creates the insertion point details for the specified scope of a given 
+protocol buffer message type: *file name* and *identifier*.
 
 ``` Java
 final class ExtraMessageInterface extends AbstractCodeGenerator {
