@@ -48,6 +48,7 @@ final class ProtocolTypeSet {
      * {@code false}.
      */
     public boolean contains(String typeName) {
+        checkNotNull(typeName);
         return allRawTypeNames().contains(typeName);
     }
 
@@ -130,6 +131,7 @@ final class ProtocolTypeSet {
         }
     }
 
+    @Immutable
     private static final class ProtocolTypeMapper {
 
         private final JavaName javaName;

@@ -9,6 +9,7 @@ package co.raccoons.protoc.plugin;
 import co.raccoons.common.eventbus.Subscribable;
 import co.raccoons.protoc.plugin.core.FileDescriptorSet;
 import co.raccoons.protoc.plugin.core.ProtocolFile;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
@@ -47,6 +48,11 @@ public final class CodeGenerator {
      */
     public static Builder newBuilder() {
         return new Builder();
+    }
+
+    @VisibleForTesting
+    ImmutableSet<AbstractCodeGenerator> generators() {
+        return generators;
     }
 
     /**
@@ -88,7 +94,7 @@ public final class CodeGenerator {
     }
 
     private static void submitEvents(CodeGeneratorRequest request) {
-        var fileDescriptorSet= FileDescriptorSet.of(request.getProtoFileList());
+        var fileDescriptorSet = FileDescriptorSet.of(request.getProtoFileList());
         request.getFileToGenerateList()
                 .stream()
                 .map(fileDescriptorSet::fileByName)
