@@ -67,7 +67,7 @@ class ProtocolFileTest {
     @ParameterizedTest
     @MethodSource
     @DisplayName("generates `message` file name")
-    void messageFileName(String expected, Descriptor messageType) throws ClassNotFoundException {
+    void messageFileName(String expected, Descriptor messageType) {
         var protocolFile = ProtocolFile.of(messageType.getFile());
         assertEquals(expected, protocolFile.messageFileName(messageType));
     }
