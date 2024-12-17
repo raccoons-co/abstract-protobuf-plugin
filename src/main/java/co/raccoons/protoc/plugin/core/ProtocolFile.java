@@ -47,7 +47,7 @@ public final class ProtocolFile implements JavaName {
     }
 
     /**
-     * Posts an event for each protocol message type in this file for
+     * Posts an event for each protocol buffer message type in this file for
      * the further processing by code generators.
      */
     public void submitEvents() {

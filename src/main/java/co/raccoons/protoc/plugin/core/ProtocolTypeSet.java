@@ -21,7 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
 /**
- * A set of the protocol message types.
+ * A set of the protocol buffer message types.
  */
 @Immutable
 final class ProtocolTypeSet {

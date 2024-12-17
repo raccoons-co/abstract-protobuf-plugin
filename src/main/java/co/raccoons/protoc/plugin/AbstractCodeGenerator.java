@@ -25,14 +25,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * and provide implementation for the method {@code generate(...)}.
  * <p>
  * By overriding the {@code precondition()} method, the programmer can filter
- * any protocol message type that must be processed by the concrete generator.
+ * any protocol buffer message type that must be processed by the concrete
+ * generator.
  */
 public abstract class AbstractCodeGenerator implements Subscribable {
 
     private final Set<File> extensions = new HashSet<>();
 
     /**
-     * Handles extra java code generation for any protocol message types.
+     * Handles extra java code generation for any protocol buffer message types.
      * <p>
      * This method subscribes for the events posted by parser of protocol
      * messages.
@@ -55,15 +56,15 @@ public abstract class AbstractCodeGenerator implements Subscribable {
 
     /**
      * Generates code generator response file that extends the output produced
-     * by another code generator for any protocol message type.
+     * by another code generator for any protocol buffer message type.
      */
     protected abstract File generate(ProtocolType type);
 
     /**
      * This method is designed to be overridden.
      * <p>
-     * Returning predicate, the programmer can filter any protocol message type
-     * that must be processed by the concrete generator.
+     * Returning predicate, the programmer can filter any protocol buffer
+     * message type that must be processed by the concrete generator.
      * <p>
      * If multiple predicates should be composed, the method must call
      * {@code super.filter()} first.
