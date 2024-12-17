@@ -12,6 +12,7 @@ import co.raccoons.example.MultipleTrue;
 import co.raccoons.example.Nothing;
 import co.raccoons.example.TopLevelEnum;
 import co.raccoons.example.UserInfo;
+import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import org.junit.jupiter.api.DisplayName;
@@ -28,6 +29,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("ProtocolFile")
 class ProtocolFileTest {
+
+    @Test
+    @DisplayName("not accepts `null`")
+    void throwsNullPointerException() {
+        new NullPointerTester().testAllPublicStaticMethods(ProtocolFile.class);
+    }
 
     @ParameterizedTest
     @DisplayName("converts file name to Pascal case")

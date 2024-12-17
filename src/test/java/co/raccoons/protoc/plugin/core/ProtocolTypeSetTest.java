@@ -7,6 +7,7 @@
 package co.raccoons.protoc.plugin.core;
 
 import co.raccoons.example.Nothing;
+import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +17,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ProtocolTypeSetTest {
 
     @Test
+    @DisplayName("not accepts `null`")
+    void throwsExceptionOnNull() {
+        var protocolTypeSet = ProtocolTypeSet.newBuilder().build();
+        new NullPointerTester().testAllPublicInstanceMethods(protocolTypeSet);
+    }
+
+    @Test
     @DisplayName("adds message type")
-    void addsMessageType(){
+    void addsMessageType() {
         var protocolTypeSet =
                 ProtocolTypeSet.newBuilder()
                         .add(Nothing.getDescriptor())
@@ -27,7 +35,7 @@ class ProtocolTypeSetTest {
 
     @Test
     @DisplayName("adds enum type")
-    void addsEnumType(){
+    void addsEnumType() {
         var protocolTypeSet =
                 ProtocolTypeSet.newBuilder()
                         .add(Nothing.NothingEnum.getDescriptor())

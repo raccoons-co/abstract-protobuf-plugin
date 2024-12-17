@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 class CustomOptionRegistryTest {
 
     @Test
-    @DisplayName("not accept `null`")
+    @DisplayName("not accepts `null`")
     void throwsNullPointerException(){
         new NullPointerTester().testAllPublicStaticMethods(CustomOptionRegistry.class);
     }

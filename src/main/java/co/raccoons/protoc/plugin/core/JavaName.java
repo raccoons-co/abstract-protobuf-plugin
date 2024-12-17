@@ -26,6 +26,7 @@ import static java.lang.String.format;
  * @see <a href="https://protobuf.dev/reference/java/java-proto-names/">
  * java-proto-names</a>
  */
+@Immutable
 interface JavaName {
 
     String JAVA_FILE_NAME_PATTERN = "%s/%s.java";

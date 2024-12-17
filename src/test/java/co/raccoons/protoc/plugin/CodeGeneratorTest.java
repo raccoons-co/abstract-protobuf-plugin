@@ -18,7 +18,7 @@ class CodeGeneratorTest {
 
     @Test
     @DisplayName("not accepts `null`")
-    void throwsExceptionOnNull(){
+    void throwsExceptionOnNull() {
         var generator = CodeGenerator.newBuilder().build();
         new NullPointerTester().testAllPublicInstanceMethods(generator);
     }

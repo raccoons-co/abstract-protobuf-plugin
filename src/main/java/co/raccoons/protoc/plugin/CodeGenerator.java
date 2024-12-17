@@ -94,7 +94,7 @@ public final class CodeGenerator {
     }
 
     private static void submitEvents(CodeGeneratorRequest request) {
-        var fileDescriptorSet= FileDescriptorSet.of(request.getProtoFileList());
+        var fileDescriptorSet = FileDescriptorSet.of(request.getProtoFileList());
         request.getFileToGenerateList()
                 .stream()
                 .map(fileDescriptorSet::fileByName)
