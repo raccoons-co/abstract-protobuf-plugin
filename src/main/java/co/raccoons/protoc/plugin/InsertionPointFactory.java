@@ -14,7 +14,7 @@ import static java.lang.String.format;
  * @see <a href="https://protobuf.dev/reference/java/java-generated/#plugins">
  * Plugin Insertion Points</a>
  */
-public enum InsertionPointFactory {
+public enum InsertionPointFactory { // NOSONAR java:S115
 
     /**
      * Extra interface of the Message type class.

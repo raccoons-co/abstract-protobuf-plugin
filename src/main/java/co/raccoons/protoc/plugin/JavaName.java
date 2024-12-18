@@ -122,7 +122,7 @@ interface JavaName {
     }
 
     private String directory() {
-        return javaPackage().replaceAll("\\.", "/");
+        return javaPackage().replace(".", "/");
     }
 
     private String javaPackage() {
