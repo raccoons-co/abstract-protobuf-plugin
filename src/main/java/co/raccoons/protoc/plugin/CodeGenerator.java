@@ -7,8 +7,6 @@
 package co.raccoons.protoc.plugin;
 
 import co.raccoons.common.eventbus.Subscribable;
-import co.raccoons.protoc.plugin.core.FileDescriptorSet;
-import co.raccoons.protoc.plugin.core.ProtocolFile;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
@@ -34,6 +32,22 @@ public final class CodeGenerator {
     }
 
     /**
+     * Obtains a new builder of the {@code CodeGenerator}.
+     */
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    private static void submitEvents(CodeGeneratorRequest request) {
+        var fileDescriptorSet = FileDescriptorSet.of(request.getProtoFileList());
+        request.getFileToGenerateList()
+                .stream()
+                .map(fileDescriptorSet::fileByName)
+                .map(ProtocolFile::of)
+                .forEach(ProtocolFile::submitEvents);
+    }
+
+    /**
      * Processes the given compiler request and generates the Protobuf compiler
      * response files.
      */
@@ -43,16 +57,20 @@ public final class CodeGenerator {
         return extensions();
     }
 
-    /**
-     * Obtains a new builder of the {@code CodeGenerator}.
-     */
-    public static Builder newBuilder() {
-        return new Builder();
-    }
-
     @VisibleForTesting
     ImmutableSet<AbstractCodeGenerator> generators() {
         return generators;
+    }
+
+    private void register() {
+        generators.forEach(Subscribable::register);
+    }
+
+    private Collection<File> extensions() {
+        return generators.stream()
+                .map(AbstractCodeGenerator::extensions)
+                .flatMap(Collection::stream)
+                .collect(toImmutableSet());
     }
 
     /**
@@ -80,25 +98,5 @@ public final class CodeGenerator {
         public CodeGenerator build() {
             return new CodeGenerator(this);
         }
-    }
-
-    private void register() {
-        generators.forEach(Subscribable::register);
-    }
-
-    private Collection<File> extensions() {
-        return generators.stream()
-                .map(AbstractCodeGenerator::extensions)
-                .flatMap(Collection::stream)
-                .collect(toImmutableSet());
-    }
-
-    private static void submitEvents(CodeGeneratorRequest request) {
-        var fileDescriptorSet = FileDescriptorSet.of(request.getProtoFileList());
-        request.getFileToGenerateList()
-                .stream()
-                .map(fileDescriptorSet::fileByName)
-                .map(ProtocolFile::of)
-                .forEach(ProtocolFile::submitEvents);
     }
 }
