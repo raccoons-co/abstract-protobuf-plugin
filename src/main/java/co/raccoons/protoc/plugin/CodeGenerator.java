@@ -38,15 +38,6 @@ public final class CodeGenerator {
         return new Builder();
     }
 
-    private static void submitEvents(CodeGeneratorRequest request) {
-        var fileDescriptorSet = FileDescriptorSet.of(request.getProtoFileList());
-        request.getFileToGenerateList()
-                .stream()
-                .map(fileDescriptorSet::fileByName)
-                .map(ProtocolFile::of)
-                .forEach(ProtocolFile::submitEvents);
-    }
-
     /**
      * Processes the given compiler request and generates the Protobuf compiler
      * response files.
@@ -62,15 +53,24 @@ public final class CodeGenerator {
         return generators;
     }
 
-    private void register() {
-        generators.forEach(Subscribable::register);
-    }
-
     private Collection<File> extensions() {
         return generators.stream()
                 .map(AbstractCodeGenerator::extensions)
                 .flatMap(Collection::stream)
                 .collect(toImmutableSet());
+    }
+
+    private void register() {
+        generators.forEach(Subscribable::register);
+    }
+
+    private static void submitEvents(CodeGeneratorRequest request) {
+        var fileDescriptorSet = FileDescriptorSet.of(request.getProtoFileList());
+        request.getFileToGenerateList()
+                .stream()
+                .map(fileDescriptorSet::fileByName)
+                .map(ProtocolFile::of)
+                .forEach(ProtocolFile::submitEvents);
     }
 
     /**

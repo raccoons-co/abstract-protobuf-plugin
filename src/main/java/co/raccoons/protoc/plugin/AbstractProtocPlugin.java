@@ -67,7 +67,6 @@ public abstract class AbstractProtocPlugin {
      */
     protected abstract CodeGeneratorResponse response();
 
-
     /**
      * Reads an encoded {@code CodeGeneratorRequest} that written to the plugin's
      * stdin.

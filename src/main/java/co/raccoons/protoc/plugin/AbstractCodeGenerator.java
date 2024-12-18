@@ -32,10 +32,6 @@ public abstract class AbstractCodeGenerator implements Subscribable {
 
     private final Set<File> extensions = new HashSet<>();
 
-    private static boolean alwaysTrue(ProtocolType ignored) {
-        return true;
-    }
-
     /**
      * Handles extra java code generation for any protocol buffer message types.
      * <p>
@@ -59,12 +55,6 @@ public abstract class AbstractCodeGenerator implements Subscribable {
     }
 
     /**
-     * Generates code generator response file that extends the output produced
-     * by another code generator for any protocol buffer message type.
-     */
-    protected abstract File generate(ProtocolType type);
-
-    /**
      * This method is designed to be overridden.
      * <p>
      * Returning predicate, the programmer can filter any protocol buffer
@@ -84,5 +74,15 @@ public abstract class AbstractCodeGenerator implements Subscribable {
      */
     protected Predicate<ProtocolType> precondition() {
         return AbstractCodeGenerator::alwaysTrue;
+    }
+
+    /**
+     * Generates code generator response file that extends the output produced
+     * by another code generator for any protocol buffer message type.
+     */
+    protected abstract File generate(ProtocolType type);
+
+    private static boolean alwaysTrue(ProtocolType ignored) {
+        return true;
     }
 }

@@ -31,38 +31,6 @@ interface JavaName {
 
     String JAVA_FILE_NAME_PATTERN = "%s/%s.java";
 
-    private static String enumMultiple(EnumDescriptor enumType) {
-        return isTopLevelEnum(enumType)
-                ? enumType.getName()
-                : topLevelMessageName(enumType.getContainingType());
-    }
-
-    private static String messageMultiple(Descriptor messageType) {
-        return isTopLevelMessage(messageType)
-                ? messageType.getName()
-                : topLevelMessageName(messageType.getContainingType());
-    }
-
-    private static String orBuilderMultiple(Descriptor messageType) {
-        return isTopLevelMessage(messageType)
-                ? messageType.getName() + "OrBuilder"
-                : topLevelMessageName(messageType.getContainingType());
-    }
-
-    private static String topLevelMessageName(Descriptor messageType) {
-        return isTopLevelMessage(messageType)
-                ? messageType.getName()
-                : topLevelMessageName(messageType.getContainingType());
-    }
-
-    private static boolean isTopLevelEnum(EnumDescriptor enumType) {
-        return enumType.getContainingType() == null;
-    }
-
-    private static boolean isTopLevelMessage(Descriptor messageType) {
-        return messageType.getContainingType() == null;
-    }
-
     /**
      * Returns file descriptor that describes .proto file, including everything
      * defined within.
@@ -108,16 +76,34 @@ interface JavaName {
                 : outerClassName();
     }
 
+    private static String enumMultiple(EnumDescriptor enumType) {
+        return isTopLevelEnum(enumType)
+                ? enumType.getName()
+                : topLevelMessageName(enumType.getContainingType());
+    }
+
     private String messageName(Descriptor messageType) {
         return isJavaMultipleFiles()
                 ? messageMultiple(messageType)
                 : outerClassName();
     }
 
+    private static String messageMultiple(Descriptor messageType) {
+        return isTopLevelMessage(messageType)
+                ? messageType.getName()
+                : topLevelMessageName(messageType.getContainingType());
+    }
+
     private String orBuilderName(Descriptor messageType) {
         return isJavaMultipleFiles()
                 ? orBuilderMultiple(messageType)
                 : outerClassName();
+    }
+
+    private static String orBuilderMultiple(Descriptor messageType) {
+        return isTopLevelMessage(messageType)
+                ? messageType.getName() + "OrBuilder"
+                : topLevelMessageName(messageType.getContainingType());
     }
 
     private String outerClassName() {
@@ -139,10 +125,6 @@ interface JavaName {
         return javaPackage().replaceAll("\\.", "/");
     }
 
-    private boolean isJavaMultipleFiles() {
-        return file().getOptions().getJavaMultipleFiles();
-    }
-
     private String javaPackage() {
         var javaPackage = file().getOptions().getJavaPackage();
         return isNullOrEmpty(javaPackage)
@@ -154,6 +136,24 @@ interface JavaName {
         var protoPackage = file().getPackage();
         checkArgument(!isNullOrEmpty(protoPackage), "Package name is undefined");
         return protoPackage;
+    }
+
+    private boolean isJavaMultipleFiles() {
+        return file().getOptions().getJavaMultipleFiles();
+    }
+
+    private static String topLevelMessageName(Descriptor messageType) {
+        return isTopLevelMessage(messageType)
+                ? messageType.getName()
+                : topLevelMessageName(messageType.getContainingType());
+    }
+
+    private static boolean isTopLevelEnum(EnumDescriptor enumType) {
+        return enumType.getContainingType() == null;
+    }
+
+    private static boolean isTopLevelMessage(Descriptor messageType) {
+        return messageType.getContainingType() == null;
     }
 
     @Immutable
