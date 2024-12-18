@@ -77,13 +77,16 @@ public enum InsertionPointFactory {
     }
 
     /**
+     * Returns Java file name of the given type.
+     */
+    protected String javaFileName(ProtocolType type) {
+        return type.getJavaFileName().getName();
+    }
+
+    /**
      * Returns insertion point identifier of the given type.
      */
     protected String identifier(ProtocolType type) {
         return format("%s:%s", name(), type.getName());
-    }
-
-    protected String javaFileName(ProtocolType type) {
-        return type.getJavaFileName().getName();
     }
 }

@@ -87,14 +87,7 @@ final class ProtocolFile implements JavaName {
 
         private void flatten(Descriptor messageType) {
             walkEnumTypes(messageType.getEnumTypes());
-            walkNestedTypes(messageType.getNestedTypes());
-        }
-
-        private void walkNestedTypes(List<Descriptor> messageTypeList) {
-            for (var messageType : messageTypeList) {
-                add(messageType);
-                flatten(messageType);
-            }
+            walkMessageTypes(messageType.getNestedTypes());
         }
 
         @SuppressWarnings("CheckReturnValue")

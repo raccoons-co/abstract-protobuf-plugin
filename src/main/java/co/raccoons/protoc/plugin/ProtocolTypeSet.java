@@ -57,11 +57,11 @@ final class ProtocolTypeSet {
      * The values are mapped to the java proto names file
      */
     public ImmutableSet<ProtocolType> values(JavaName javaName) {
-        var protocolTypeMapper = new ProtocolTypeMapper(javaName);
+        var mapper = new ProtocolTypeMapper(javaName);
         return ImmutableSet.<ProtocolType>builder()
-                .addAll(services(protocolTypeMapper))
-                .addAll(enumTypes(protocolTypeMapper))
-                .addAll(messageTypes(protocolTypeMapper))
+                .addAll(services(mapper))
+                .addAll(enumTypes(mapper))
+                .addAll(messageTypes(mapper))
                 .build();
     }
 
