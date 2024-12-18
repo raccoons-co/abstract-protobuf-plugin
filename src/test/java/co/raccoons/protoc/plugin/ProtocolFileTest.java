@@ -25,7 +25,7 @@ import raccoons.example.NoJavaPackage;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("ProtocolFile")
 class ProtocolFileTest {
@@ -45,14 +45,14 @@ class ProtocolFileTest {
             "_nothing_else_.proto"
     })
     void convertsSnakeToPascalCase(String sample) {
-        assertEquals("NothingElse", JavaName.SimpleName.fromProtoName(sample));
+        assertThat(JavaName.SimpleName.fromProtoName(sample)).isEqualTo("NothingElse");
     }
 
     @Test
     @DisplayName("converts file name to Pascal case")
     void convertsSnakeToPascalCase() {
         var sample = "evenTs__aS.proto";
-        assertEquals("EvenTsAS", JavaName.SimpleName.fromProtoName(sample));
+        assertThat(JavaName.SimpleName.fromProtoName(sample)).isEqualTo("EvenTsAS");
     }
 
     @ParameterizedTest
@@ -60,7 +60,7 @@ class ProtocolFileTest {
     @DisplayName("generates derived `outerClass` file name")
     void outerClassFileName(String expected, Descriptor messageType) {
         var protocolFile = ProtocolFile.of(messageType.getFile());
-        assertEquals(expected, protocolFile.outerClassFileName());
+        assertThat(protocolFile.outerClassFileName()).isEqualTo(expected);
     }
 
     @ParameterizedTest
@@ -68,7 +68,7 @@ class ProtocolFileTest {
     @DisplayName("generates `orBuilder` file name")
     void orBuilderFileName(String expected, Descriptor messageType) {
         var protocolFile = ProtocolFile.of(messageType.getFile());
-        assertEquals(expected, protocolFile.orBuilderFileName(messageType));
+        assertThat(protocolFile.orBuilderFileName(messageType)).isEqualTo(expected);
     }
 
     @ParameterizedTest
@@ -76,7 +76,7 @@ class ProtocolFileTest {
     @DisplayName("generates `message` file name")
     void messageFileName(String expected, Descriptor messageType) {
         var protocolFile = ProtocolFile.of(messageType.getFile());
-        assertEquals(expected, protocolFile.messageFileName(messageType));
+        assertThat(protocolFile.messageFileName(messageType)).isEqualTo(expected);
     }
 
     @ParameterizedTest
@@ -84,7 +84,7 @@ class ProtocolFileTest {
     @DisplayName("generates `enum` file name")
     void enumFileName(String expected, EnumDescriptor enumType) {
         var protocolFile = ProtocolFile.of(enumType.getFile());
-        assertEquals(expected, protocolFile.enumFileName(enumType));
+        assertThat(protocolFile.enumFileName(enumType)).isEqualTo(expected);
     }
 
     private static Stream<Arguments> outerClassFileName() {

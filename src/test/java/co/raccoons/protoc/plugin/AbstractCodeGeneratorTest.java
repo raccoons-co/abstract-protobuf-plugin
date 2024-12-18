@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("AbstractCodeGenerator")
 class AbstractCodeGeneratorTest {
@@ -31,7 +31,7 @@ class AbstractCodeGeneratorTest {
 
         generator.register();
         ProtocolType.newBuilder().build().post();
-        assertEquals(1, generator.extensions().size());
+        assertThat(generator.extensions()).hasSize(1);
     }
 
     @Test
@@ -56,7 +56,7 @@ class AbstractCodeGeneratorTest {
                 .setMessageType(Nothing.getDescriptor().toProto())
                 .build()
                 .post();
-        assertEquals(1, generator.extensions().size());
+        assertThat(generator.extensions()).hasSize(1);
     }
 
     private static boolean hasMessageType(ProtocolType protocolType) {

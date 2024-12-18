@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("InsertionPoint")
 class InsertionPointFactoryTest {
@@ -24,7 +24,7 @@ class InsertionPointFactoryTest {
     void hasCorrectFormat(String expected, InsertionPointFactory insertionPointFactory) {
         var type = protobufType();
         var insertionPoint = insertionPointFactory.newInsertionPoint(type);
-        assertEquals(expected, insertionPoint.getIdentifier());
+        assertThat(insertionPoint.getIdentifier()).isEqualTo(expected);
     }
 
     private ProtocolType protobufType() {
