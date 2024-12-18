@@ -11,9 +11,13 @@ option java_multiple_files = true;
 import "google/protobuf/descriptor.proto";
 
 extend google.protobuf.MessageOptions {
-  optional ExtraOption extra = 77038;
+  optional ExtraMessageOption extra = 77038;
 }
 
-message ExtraOption {
+message ExtraMessageOption {
   string message_implements = 1;
+}
+
+extend google.protobuf.FieldOptions {
+  bool required = 77138;
 }
