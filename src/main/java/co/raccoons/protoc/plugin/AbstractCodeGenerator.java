@@ -61,11 +61,11 @@ public abstract class AbstractCodeGenerator implements Subscribable {
      * message type that must be processed by the concrete generator.
      * <p>
      * If multiple predicates should be composed, the method must call
-     * {@code super.filter()} first.
+     * {@code super.precondition()} first.
      * <p>
      * Example:
      * <pre>
-     * protected Predicate&lt;ProtocolType&gt; filter() {
+     * protected Predicate&lt;ProtocolType&gt; precondition() {
      *     return super.precondition()
      *         .and(ExtraMessageInterface::hasMessageType)
      *         .and(ExtraMessageInterface::hasExtraOption);

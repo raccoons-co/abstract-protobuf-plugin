@@ -18,7 +18,7 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A set of Proto files of with their dependencies.
+ * A set of Proto files with their dependencies.
  */
 @Immutable
 final class FileDescriptorSet {
