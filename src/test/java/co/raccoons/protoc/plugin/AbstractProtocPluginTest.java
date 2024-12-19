@@ -50,9 +50,7 @@ class AbstractProtocPluginTest {
 
         assertThat(outputStream.toString().contains("ExampleMessage.java")).isTrue();
         assertThat(outputStream.toString().contains("message_implements:")).isTrue();
-        ;
         assertThat(outputStream.toString().contains("co.raccoons.event.Observable,")).isTrue();
-        ;
     }
 
     @Test
