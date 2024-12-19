@@ -39,6 +39,14 @@ final class FileDescriptorSet {
         return new FileDescriptorSet(files);
     }
 
+    /**
+     * Obtains proto file descriptor for the given file name.
+     */
+    public FileDescriptor fileByName(String name) {
+        checkNotNull(name);
+        return files.get(name);
+    }
+
     private static ImmutableMap<String, FileDescriptor> files(Iterable<FileDescriptorProto> protos) {
         Map<String, FileDescriptor> files = new HashMap<>();
         for (var fileDescriptorProto : protos) {
@@ -57,13 +65,5 @@ final class FileDescriptorSet {
             }
         }
         return ImmutableMap.copyOf(files);
-    }
-
-    /**
-     * Obtains proto file descriptor for the given file name.
-     */
-    public FileDescriptor fileByName(String name) {
-        checkNotNull(name);
-        return files.get(name);
     }
 }
