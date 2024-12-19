@@ -11,7 +11,7 @@ import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("ProtocolTypeSet")
 class ProtocolTypeSetTest {
@@ -30,7 +30,7 @@ class ProtocolTypeSetTest {
                 ProtocolTypeSet.newBuilder()
                         .add(Nothing.getDescriptor())
                         .build();
-        assertTrue(protocolTypeSet.contains("Nothing"));
+        assertThat(protocolTypeSet.contains("Nothing")).isTrue();
     }
 
     @Test
@@ -40,6 +40,6 @@ class ProtocolTypeSetTest {
                 ProtocolTypeSet.newBuilder()
                         .add(Nothing.NothingEnum.getDescriptor())
                         .build();
-        assertTrue(protocolTypeSet.contains("NothingEnum"));
+        assertThat(protocolTypeSet.contains("NothingEnum")).isTrue();
     }
 }
