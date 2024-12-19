@@ -11,7 +11,7 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("Multipart Code Generator")
 class CodeGeneratorTest {
@@ -29,7 +29,7 @@ class CodeGeneratorTest {
         var generator = CodeGenerator.newBuilder()
                 .add(generatorMock)
                 .build();
-        assertEquals(1, generator.generators().size());
+        assertThat(generator.generators()).hasSize(1);
     }
 
     private final AbstractCodeGenerator generatorMock =

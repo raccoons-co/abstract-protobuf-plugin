@@ -12,15 +12,14 @@ import com.google.protobuf.ExtensionRegistry;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("CustomOptionRegistry")
 class CustomOptionRegistryTest {
 
     @Test
     @DisplayName("not accepts `null`")
-    void throwsNullPointerException(){
+    void throwsNullPointerException() {
         new NullPointerTester().testAllPublicStaticMethods(CustomOptionRegistry.class);
     }
 
@@ -28,7 +27,7 @@ class CustomOptionRegistryTest {
     @DisplayName("is instance of ExtensionRegistry")
     void returnsCorrectType() {
         var registry = CustomOptionRegistry.newRegistry(this::register);
-        assertInstanceOf(ExtensionRegistry.class, registry);
+        assertThat(registry).isInstanceOf(ExtensionRegistry.class);
     }
 
     @Test
@@ -36,7 +35,7 @@ class CustomOptionRegistryTest {
     void hasRegisteredCustomOption() {
         var registry = CustomOptionRegistry.newRegistry(this::register);
         var customOption = registry.findImmutableExtensionByName("extra");
-        assertEquals("extra", customOption.descriptor.getName());
+        assertThat(customOption.descriptor.getName()).isEqualTo("extra");
     }
 
     private void register(ExtensionRegistry registry) {

@@ -9,9 +9,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("AbstractProtocPlugin")
 class AbstractProtocPluginTest {
@@ -30,7 +29,8 @@ class AbstractProtocPluginTest {
                                 }.integrate()
                 );
 
-        assertEquals("CodeGeneratorResponse is null.", exception.getMessage());
+        assertThat(exception).hasMessageThat()
+                .contains("CodeGeneratorResponse is null.");
     }
 
     @Test
@@ -48,9 +48,9 @@ class AbstractProtocPluginTest {
             }
         }.integrate();
 
-        assertTrue(outputStream.toString().contains("ExampleMessage.java"));
-        assertTrue(outputStream.toString().contains("message_implements:"));
-        assertTrue(outputStream.toString().contains("co.raccoons.event.Observable,"));
+        assertThat(outputStream.toString().contains("ExampleMessage.java")).isTrue();
+        assertThat(outputStream.toString().contains("message_implements:")).isTrue();
+        assertThat(outputStream.toString().contains("co.raccoons.event.Observable,")).isTrue();
     }
 
     @Test
@@ -68,7 +68,8 @@ class AbstractProtocPluginTest {
                                     }
                                 }.integrate()
                 );
-        assertEquals("Unable to read code generator request.", exception.getMessage());
+        assertThat(exception).hasMessageThat()
+                .isEqualTo("Unable to read code generator request.");
     }
 
     private final File file =
