@@ -4,9 +4,4 @@
  * @license MIT
  */
 
-rootProject.name = "ProtocExtra"
-
-include(
-    "lib",
-    "plugin"
-)
+package co.raccoons.protoc.plugin;
