@@ -17,6 +17,7 @@ protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:3.25.5"
     }
+
     generateProtoTasks {
         ofSourceSet("main")
     }

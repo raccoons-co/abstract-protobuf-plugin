@@ -32,6 +32,10 @@ protobuf {
     generateProtoTasks {
         ofSourceSet("main")
     }
+
+    plugins {
+
+    }
 }
 
 BuildWorkflow.of(project)
