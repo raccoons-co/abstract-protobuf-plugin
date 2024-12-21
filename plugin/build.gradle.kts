@@ -42,7 +42,7 @@ internal object Configuration {
 
     fun javaLibrary(): JavaLibraryConfiguration =
         JavaLibraryConfiguration.newBuilder()
-            .addDependency(Implementation("co.raccoons.protoc", "protoc-extra-lib", "0.0.8"))
+            .addDependency(Implementation("co.raccoons.protoc", "protoc-extra-lib", "0.0.9"))
             .addDependency(Implementation("com.google.guava","guava","33.4.0-jre"))
             .addDependency(Implementation("com.google.protobuf", "protobuf-java", "4.28.3"))
             .build()

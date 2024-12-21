@@ -14,6 +14,16 @@ import co.raccoons.gradle.javadoc.JavadocConfiguration
 import co.raccoons.gradle.javadoc.JavadocTag
 import co.raccoons.gradle.repository.Repository
 
+plugins {
+    java
+    id("jacoco-report-aggregation")
+}
+
+dependencies {
+    implementation(project(":lib"))
+    implementation(project(":plugin"))
+}
+
 allprojects {
     BuildWorkflow.of(project)
         .setGroup("co.raccoons.protoc")

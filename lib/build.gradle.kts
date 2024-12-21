@@ -60,6 +60,7 @@ internal object Configuration {
     fun javaLibrary(): JavaLibraryConfiguration =
         JavaLibraryConfiguration.newBuilder()
             .addDependency(Implementation("com.google.guava","guava","33.4.0-jre"))
+            .addDependency(Implementation("com.google.errorprone","error_prone_core","2.36.0"))
             .addDependency(Implementation("com.google.protobuf","protobuf-java","4.28.3"))
             .build()
 

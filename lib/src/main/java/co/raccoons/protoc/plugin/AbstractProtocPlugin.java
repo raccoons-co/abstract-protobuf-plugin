@@ -91,6 +91,7 @@ public abstract class AbstractProtocPlugin {
         }
     }
 
+    @SuppressWarnings("java:S106") // Standard outputs used directly
     private void pluginOutput(CodeGeneratorResponse response) {
         try {
             checkNotNull(response, "CodeGeneratorResponse is null.");

@@ -82,6 +82,7 @@ public abstract class AbstractCodeGenerator implements Subscribable {
      */
     protected abstract File generate(ProtocolType type);
 
+    @SuppressWarnings("unused")
     private static boolean alwaysTrue(ProtocolType ignored) {
         return true;
     }
